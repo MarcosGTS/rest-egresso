@@ -1,6 +1,6 @@
 package com.egresso.ufma.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,5 +31,5 @@ public class FaixaSalario {
     private String descricao;
 
     @OneToMany(mappedBy = "id_faixa_salario")
-    private List<ProfEgresso> profissoes;
+    private Set<ProfEgresso> profissoes;
 }

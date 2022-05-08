@@ -1,12 +1,15 @@
 package com.egresso.ufma.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -43,11 +46,18 @@ public class Egresso {
     private String url_foto;
 
     @OneToMany(mappedBy = "id_egresso")
-    private List<Depoimento> depoimentos;
+    private Set<Depoimento> depoimentos;
     @OneToMany(mappedBy = "id_egresso")
-    private List<ProfEgresso> profissoes;   
+    private Set<ProfEgresso> profissoes;   
 
-    //many to many
+    @ManyToMany
+    @JoinTable(
+        name = "contato_egresso",
+        joinColumns = @JoinColumn(name = "contato_id"),
+        inverseJoinColumns =  @JoinColumn(name = "id_egresso")
+    )
+    private Set<Contato> contatos;
+
     @OneToMany(mappedBy = "id_egresso")
-    private List<Contato> contatos;
+    private Set<CursoEgresso> cursoEgresoAssoc;
 }

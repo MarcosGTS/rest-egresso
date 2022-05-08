@@ -1,9 +1,9 @@
 package com.egresso.ufma.repository;
 
-import com.egresso.ufma.model.Usuario;
+import com.egresso.ufma.model.Cargo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Usuario, Long>{
+public interface CargoRepository extends JpaRepository<Cargo, Long> {
     
 }
