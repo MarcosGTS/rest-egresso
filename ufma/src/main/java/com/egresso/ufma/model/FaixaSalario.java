@@ -30,6 +30,6 @@ public class FaixaSalario {
     @Column(name = "descricao")
     private String descricao;
 
-    @OneToMany(mappedBy = "id_faixa_salario")
+    @OneToMany(mappedBy = "faixaSalario")
     private Set<ProfEgresso> profissoes;
 }

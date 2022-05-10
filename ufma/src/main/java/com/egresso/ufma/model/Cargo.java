@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Cargo")
+@Table(name = "cargo")
 @Data
 @Builder
 @NoArgsConstructor
@@ -33,6 +33,6 @@ public class Cargo {
     @Column(name = "descricao")
     private String descricao;
 
-    @OneToMany(mappedBy = "id_cargo")
+    @OneToMany(mappedBy = "cargo")
     private Set<ProfEgresso> profissoes;
 }

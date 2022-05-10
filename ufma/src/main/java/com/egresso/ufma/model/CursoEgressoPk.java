@@ -10,6 +10,6 @@ public class CursoEgressoPk implements Serializable {
     @Column(name = "curso_id")
     private Long curso_id;
 
-    @Column(name = "id_egresso")
-    private Long id_egresso;
+    @Column(name = "egresso_id")
+    private Long egresso_id;
 }

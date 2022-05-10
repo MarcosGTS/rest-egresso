@@ -39,6 +39,6 @@ public class Depoimento {
     private LocalDate data;
 
     @ManyToOne
-    @JoinColumn(name = "id_egresso")
+    @JoinColumn(name = "egresso_id")
     private Egresso egresso;
 }

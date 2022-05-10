@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS public.contato
 
 CREATE TABLE IF NOT EXISTS public.contato_egresso
 (
-    id_egresso integer NOT NULL,
-    id_contato integer NOT NULL,
-    CONSTRAINT pk_egresso_contato PRIMARY KEY (id_egresso, id_contato)
+    egresso_id integer NOT NULL,
+    contato_id integer NOT NULL,
+    CONSTRAINT pk_egresso_contato PRIMARY KEY (egresso_id, contato_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.curso
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS public.curso
 
 CREATE TABLE IF NOT EXISTS public.curso_egresso
 (
-    egresso_id serial NOT NULL,
+    egresso_id integer NOT NULL,
     curso_id integer NOT NULL,
     data_inicio date NOT NULL,
     data_conclusao date,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS public.prof_egresso
     id_prof_egresso serial NOT NULL,
     egresso_id integer NOT NULL,
     cargo_id integer NOT NULL,
-    id_faixa_salario integer NOT NULL,
+    faixa_salario_id integer NOT NULL,
     empresa character varying COLLATE pg_catalog."default",
     descricao character varying COLLATE pg_catalog."default",
     data_registro date NOT NULL DEFAULT CURRENT_DATE,
@@ -86,14 +86,14 @@ COMMENT ON TABLE public.prof_egresso
     IS 'Consulta de informações dos egressos quanto aos cargos que desempenham atualmente e descrição de suas atividades';
 
 ALTER TABLE IF EXISTS public.contato_egresso
-    ADD CONSTRAINT fk_contato_egresso FOREIGN KEY (id_contato)
+    ADD CONSTRAINT fk_contato_egresso FOREIGN KEY (contato_id)
     REFERENCES public.contato (id_contato) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
 ALTER TABLE IF EXISTS public.contato_egresso
-    ADD CONSTRAINT fk_egresso_contato FOREIGN KEY (id_egresso)
+    ADD CONSTRAINT fk_egresso_contato FOREIGN KEY (egresso_id)
     REFERENCES public.egresso (id_egresso) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
@@ -135,7 +135,7 @@ ALTER TABLE IF EXISTS public.prof_egresso
 
 
 ALTER TABLE IF EXISTS public.prof_egresso
-    ADD CONSTRAINT fk_faixa_salario FOREIGN KEY (id_faixa_salario)
+    ADD CONSTRAINT fk_faixa_salario FOREIGN KEY (faixa_salario_id)
     REFERENCES public.faixa_salario (id_faixa_salario) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;

@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class ProfEgresso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "egresso_id")
+    @Column(name = "id_prof_egresso")
     private Long id;
 
     @Column(name = "empresa")

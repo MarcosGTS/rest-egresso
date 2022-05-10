@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="posicao")
+@Table(name="egresso")
 @Data
 @Builder
 @NoArgsConstructor
@@ -45,19 +45,19 @@ public class Egresso {
     @Column(name = "url_foto")
     private String url_foto;
 
-    @OneToMany(mappedBy = "id_egresso")
+    @OneToMany(mappedBy = "egresso")
     private Set<Depoimento> depoimentos;
-    @OneToMany(mappedBy = "id_egresso")
+    @OneToMany(mappedBy = "egresso")
     private Set<ProfEgresso> profissoes;   
 
     @ManyToMany
     @JoinTable(
         name = "contato_egresso",
-        joinColumns = @JoinColumn(name = "contato_id"),
-        inverseJoinColumns =  @JoinColumn(name = "id_egresso")
+        joinColumns = @JoinColumn(name = "egresso_id"),
+        inverseJoinColumns = @JoinColumn(name = "contato_id")
     )
     private Set<Contato> contatos;
 
-    @OneToMany(mappedBy = "id_egresso")
+    @OneToMany(mappedBy = "egresso")
     private Set<CursoEgresso> cursoEgresoAssoc;
 }

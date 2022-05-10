@@ -33,6 +33,6 @@ public class Curso {
     @Column(name = "nivel")
     private String nivel;
 
-    @OneToMany(mappedBy = "id_curso")
+    @OneToMany(mappedBy = "curso")
     private Set<CursoEgresso>  cursoEgressoAssoc;
 }
