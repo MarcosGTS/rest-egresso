@@ -22,7 +22,7 @@ public class ContatoRepositoryTest {
     ContatoRepository repository;
 
     @Test
-    public void testeCrudContato() {
+    public void testeSalvarContato() {
         Contato contato = Contato.builder()
             .nome("teste")
             .url_logo("teste")
@@ -30,17 +30,27 @@ public class ContatoRepositoryTest {
 
         //Create
         Contato salvo = repository.save(contato);
-
         Assertions.assertNotNull(salvo);
-        
-        //Recover
+
         Optional<Contato> pesquisado = repository.findById(contato.getId());
         
         Assertions.assertNotNull(pesquisado.get());
         Assertions.assertEquals(contato.getUrl_logo(), pesquisado.get().getUrl_logo());
         Assertions.assertEquals(contato.getNome(), pesquisado.get().getNome());
+    }
 
-        //Delete
-        repository.delete(contato);
+    @Test
+    public void testeRemoverContato() {
+        Contato contato = Contato.builder()
+            .nome("teste")
+            .url_logo("teste")
+            .build();
+
+        Contato salvo = repository.save(contato);
+        repository.deleteById(salvo.getId());
+
+        Optional<Contato> pesquisado = repository.findById(salvo.getId());
+        
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 }

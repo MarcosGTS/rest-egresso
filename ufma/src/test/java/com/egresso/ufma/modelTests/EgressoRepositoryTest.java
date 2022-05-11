@@ -22,7 +22,7 @@ public class EgressoRepositoryTest {
     private EgressoRepository repository;
 
     @Test
-    public void testeCrudEgresso() {
+    public void testeSalvarEgresso() {
         Egresso egresso = Egresso.builder()
             .cpf("000.000.000-00")
             .nome("nome teste")
@@ -45,8 +45,24 @@ public class EgressoRepositoryTest {
         Assertions.assertEquals(egresso.getResumo(), pesquisado.get().getResumo());
         Assertions.assertEquals(egresso.getUrl_foto(), pesquisado.get().getUrl_foto());
         Assertions.assertEquals(egresso.getEmail(), pesquisado.get().getEmail());
+    }
 
-        //Delete
-        repository.delete(egresso);
+    @Test
+    public void testeRemoverEgresso() {
+        Egresso egresso = Egresso.builder()
+        .cpf("000.000.000-00")
+        .nome("nome teste")
+        .resumo("resumo teste")
+        .email("email teste")
+        .url_foto("teste url-foto")
+        .build();
+
+        //Create
+        Egresso salvo = repository.save(egresso);
+        repository.deleteById(salvo.getId());
+
+        Optional<Egresso> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 }

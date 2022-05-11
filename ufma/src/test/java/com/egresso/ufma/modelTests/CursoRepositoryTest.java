@@ -22,7 +22,7 @@ public class CursoRepositoryTest {
     private CursoRepository repository;
 
     @Test
-    public void testeCrudCurso() {
+    public void testeSalvarCurso() {
         Curso curso = Curso.builder()
         .nome("teste")
         .nivel("Superior")
@@ -39,9 +39,21 @@ public class CursoRepositoryTest {
         Assertions.assertNotNull(pesquisado.get());
         Assertions.assertEquals(curso.getNivel(), pesquisado.get().getNivel());
         Assertions.assertEquals(curso.getNome(), pesquisado.get().getNome());
+    }
 
-        //Delete
-        repository.delete(curso);
+    @Test
+    public void testeRemoverCurso() {
+        Curso curso = Curso.builder()
+        .nome("teste")
+        .nivel("Superior")
+        .build();
+
+        Curso salvo = repository.save(curso); 
+        repository.deleteById(salvo.getId());
+
+        Optional<Curso> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 
 }

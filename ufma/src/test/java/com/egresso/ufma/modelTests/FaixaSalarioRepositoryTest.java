@@ -21,7 +21,7 @@ public class FaixaSalarioRepositoryTest {
     FaixaSalarioRepository repository;
 
     @Test 
-    public void testeCrudFaixaSalario() {
+    public void testeSalvarFaixaSalario() {
           
         FaixaSalario faixa = FaixaSalario
             .builder()
@@ -38,9 +38,21 @@ public class FaixaSalarioRepositoryTest {
         
         Assertions.assertNotNull(pesquisado.get());
         Assertions.assertEquals(faixa.getDescricao(), pesquisado.get().getDescricao());
-
-        //Delete
-        repository.delete(faixa);
     } 
 
+    @Test
+    public void testeRemoverFaixaSalario() {
+        FaixaSalario faixa = FaixaSalario
+            .builder()
+            .descricao("teste")
+            .build();
+
+        //Create
+        FaixaSalario salvo = repository.save(faixa);
+        repository.deleteById(salvo.getId());
+
+        Optional<FaixaSalario> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
+    }
 }

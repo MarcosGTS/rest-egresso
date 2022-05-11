@@ -32,7 +32,7 @@ public class CursoEgressoRepositoryTest {
     private CursoRepository cursoRepo;
 
     @Test
-    public void testeCrudCursoEgresso() {
+    public void testeSalvarCursoEgresso() {
         Curso cursoSalvo = cursoRepo.save(Curso.builder()
             .nome("nome curso")
             .nivel("avancado")
@@ -60,7 +60,6 @@ public class CursoEgressoRepositoryTest {
         //Create
         
         CursoEgresso salvo = repository.save(cursoEgresso);
-
         Assertions.assertNotNull(salvo);
         
         //Recover
@@ -69,8 +68,41 @@ public class CursoEgressoRepositoryTest {
         Assertions.assertNotNull(pesquisado.get());
         Assertions.assertEquals(cursoEgresso.getData_inicio(), pesquisado.get().getData_inicio());
         Assertions.assertEquals(cursoEgresso.getData_conclusao(), pesquisado.get().getData_conclusao());
+    }
 
-        //Delete
-        repository.delete(cursoEgresso);
+    @Test
+    public void testeRemoverCursoEgresso() {
+        Curso cursoSalvo = cursoRepo.save(Curso.builder()
+            .nome("nome curso")
+            .nivel("avancado")
+            .build()
+        );
+
+        Egresso egressoSalvo = egressoRepo.save(Egresso.builder()
+            .email("teste")
+            .build()
+        );
+        
+        CursoEgressoPk idCursoEgresso = new CursoEgressoPk(
+            egressoSalvo.getId(),
+            cursoSalvo.getId() 
+        );
+
+        CursoEgresso cursoEgresso = CursoEgresso.builder()
+            .id(idCursoEgresso)
+            .curso(cursoSalvo)
+            .egresso(egressoSalvo)
+            .data_inicio(LocalDate.now())
+            .data_conclusao(LocalDate.now())
+            .build();
+
+        //Create
+        
+        CursoEgresso salvo = repository.save(cursoEgresso);
+        repository.deleteById(salvo.getId());
+
+        Optional<CursoEgresso> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 }

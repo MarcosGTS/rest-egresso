@@ -21,25 +21,36 @@ public class CargoRepositoryTest {
     CargoRepository repository;
 
     @Test
-    public void testeCrudCargo() {
+    public void testeSalvarCargo() {
         Cargo cargo = Cargo.builder()
             .nome("teste")
             .descricao("teste")
             .build();
 
-        //Create
+        
         Cargo salvo = repository.save(cargo);
-
         Assertions.assertNotNull(salvo);
         
-        //Recover
         Optional<Cargo> pesquisado = repository.findById(cargo.getId());
-        
-        Assertions.assertNotNull(pesquisado.get());
-        Assertions.assertEquals(cargo.getDescricao(), salvo.getDescricao());
-        Assertions.assertEquals(cargo.getNome(), salvo.getNome());
 
-        //Delete
-        repository.delete(cargo);
+        Assertions.assertNotNull(pesquisado.get());
+        Assertions.assertEquals(cargo.getDescricao(), pesquisado.get().getDescricao());
+        Assertions.assertEquals(cargo.getNome(), pesquisado.get().getNome());
+    }
+
+
+    @Test 
+    public void testeRemoverCargo() {
+        Cargo cargo = Cargo.builder()
+            .nome("teste")
+            .descricao("teste")
+            .build();
+        
+        Cargo salvo = repository.save(cargo);
+        repository.deleteById(salvo.getId());
+
+        Optional<Cargo> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 }

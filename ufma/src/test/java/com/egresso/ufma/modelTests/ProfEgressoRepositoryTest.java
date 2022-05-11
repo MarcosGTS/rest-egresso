@@ -22,7 +22,7 @@ public class ProfEgressoRepositoryTest {
     private ProfEgressoRepository repository;
 
     @Test
-    public void testeCrudProfEgresso() {
+    public void testeSalvarProfEgresso() {
         ProfEgresso profissao = ProfEgresso.builder()
         .descricao("teste descricao")
         .empresa("empresa teste")
@@ -41,8 +41,22 @@ public class ProfEgressoRepositoryTest {
         Assertions.assertEquals(profissao.getDescricao(), pesquisado.get().getDescricao());
         Assertions.assertEquals(profissao.getEmpresa(), pesquisado.get().getEmpresa());
         Assertions.assertEquals(profissao.getData_registro(), pesquisado.get().getData_registro());
-       
-        //Delete
-        repository.delete(profissao);
+    }
+
+    @Test
+    public void testeRemoverProfEgresso() {
+        ProfEgresso profissao = ProfEgresso.builder()
+        .descricao("teste descricao")
+        .empresa("empresa teste")
+        .data_registro(LocalDate.now())
+        .build();
+
+        //Create
+        ProfEgresso salvo = repository.save(profissao);
+        repository.deleteById(salvo.getId());
+
+        Optional<ProfEgresso> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());
     }
 }

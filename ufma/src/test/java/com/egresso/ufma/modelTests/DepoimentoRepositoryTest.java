@@ -23,7 +23,7 @@ public class DepoimentoRepositoryTest {
     private DepoimentoRepository repository;
 
     @Test
-    public void testeCrudDepoimento() {
+    public void testeSalvarDepoimento() {
         Depoimento depoimento = Depoimento.builder()
             .data(LocalDate.now())
             .texto("texto teste")
@@ -40,8 +40,21 @@ public class DepoimentoRepositoryTest {
         Assertions.assertNotNull(pesquisado.get());
         Assertions.assertEquals(depoimento.getTexto(), pesquisado.get().getTexto());
         Assertions.assertEquals(depoimento.getData(), pesquisado.get().getData());
+    }
 
-        //Delete
-        repository.delete(depoimento);
+    @Test
+    public void testeRemoverDepoimento() {
+        Depoimento depoimento = Depoimento.builder()
+            .data(LocalDate.now())
+            .texto("texto teste")
+            .build();
+
+        //Create
+        Depoimento salvo = repository.save(depoimento);
+        repository.deleteById(salvo.getId());
+
+        Optional<Depoimento> pesquisado = repository.findById(salvo.getId());
+
+        Assertions.assertFalse(pesquisado.isPresent());  
     }
 }
