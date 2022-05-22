@@ -1,6 +1,6 @@
 package com.egresso.ufma.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,5 +34,5 @@ public class Contato {
     private String url_logo;
 
     @ManyToMany(mappedBy = "contatos")
-    private Set<Egresso> egressos;
+    private List<Egresso> egressos;
 }

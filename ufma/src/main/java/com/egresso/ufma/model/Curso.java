@@ -1,6 +1,6 @@
 package com.egresso.ufma.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,5 +34,5 @@ public class Curso {
     private String nivel;
 
     @OneToMany(mappedBy = "curso")
-    private Set<CursoEgresso>  cursoEgressoAssoc;
+    private List<CursoEgresso>  cursoEgressoAssoc;
 }

@@ -1,6 +1,6 @@
 package com.egresso.ufma.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,9 +46,9 @@ public class Egresso {
     private String url_foto;
 
     @OneToMany(mappedBy = "egresso")
-    private Set<Depoimento> depoimentos;
+    private List<Depoimento> depoimentos;
     @OneToMany(mappedBy = "egresso")
-    private Set<ProfEgresso> profissoes;   
+    private List<ProfEgresso> profissoes;   
 
     @ManyToMany
     @JoinTable(
@@ -56,8 +56,8 @@ public class Egresso {
         joinColumns = @JoinColumn(name = "egresso_id"),
         inverseJoinColumns = @JoinColumn(name = "contato_id")
     )
-    private Set<Contato> contatos;
+    private List<Contato> contatos;
 
     @OneToMany(mappedBy = "egresso")
-    private Set<CursoEgresso> cursoEgresoAssoc;
+    private List<CursoEgresso> cursoEgresoAssoc;
 }
