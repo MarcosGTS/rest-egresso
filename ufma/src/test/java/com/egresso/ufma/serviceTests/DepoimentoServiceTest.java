@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.egresso.ufma.model.Depoimento;
 import com.egresso.ufma.model.Egresso;
+import com.egresso.ufma.repository.DepoimentoRepository;
 import com.egresso.ufma.repository.EgressoRepository;
 import com.egresso.ufma.service.DepoimentoService;
 
@@ -24,6 +25,9 @@ public class DepoimentoServiceTest {
     @Autowired
     DepoimentoService service;
 
+    @Autowired 
+    DepoimentoRepository repository;
+
     @Autowired
     EgressoRepository egressoRepo;
 
@@ -39,6 +43,20 @@ public class DepoimentoServiceTest {
 
         Assertions.assertNotNull(salvo);
         Assertions.assertEquals(depoimentoTest.getTexto(), salvo.getTexto());
+    }
+
+    @Test
+    public void deveRemoverDepoimento() {
+        Depoimento depoimento1 = Depoimento
+        .builder()
+        .texto("texto de teste")
+        .data(LocalDate.now())
+        .build(); 
+
+        Depoimento salvo = service.salvar(depoimento1);
+        service.remover(salvo);
+
+        Assertions.assertFalse(repository.existsById(salvo.getId()));
     }
 
     @Test

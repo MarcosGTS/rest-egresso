@@ -3,7 +3,6 @@ package com.egresso.ufma.repository;
 import java.util.List;
 
 import com.egresso.ufma.model.Depoimento;
-import com.egresso.ufma.model.Egresso;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
