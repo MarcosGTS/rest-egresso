@@ -11,6 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface EgressoRepository extends JpaRepository<Egresso, Long> {
+    public Boolean existsByEmail(String email);
+    public Boolean existsByCpf(String cpf);
+
     @Query(value = "SELECT c FROM Contato c JOIN FETCH c.egressos e WHERE e.id = ?1")
     public LinkedList<Contato> findContatos(Long egresso_id);
 

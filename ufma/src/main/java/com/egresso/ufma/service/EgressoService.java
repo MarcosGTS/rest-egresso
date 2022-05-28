@@ -20,6 +20,7 @@ import com.egresso.ufma.repository.CursoRepository;
 import com.egresso.ufma.repository.EgressoRepository;
 import com.egresso.ufma.repository.FaixaSalarioRepository;
 import com.egresso.ufma.repository.ProfEgressoRepository;
+import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,16 +50,18 @@ public class EgressoService {
     FaixaSalarioRepository faixaSalarioRepo;
 
     public Egresso salvar(Egresso egresso) {
-        //TODO: Checar egresso
+        verificarEgresso(egresso);
         return repository.save(egresso);
     };
 
-    public void remover(Egresso egresso) {
-
+    public void delatar(Egresso egresso) {
+        verificarExistencia(egresso);
+        repository.delete(egresso);
     }
 
     public List<Contato> adicionarContato(Egresso egresso, Contato novoContato) {
-        
+        verificarExistencia(egresso);
+
         if (egresso.getContatos() == null) egresso.setContatos(new LinkedList<Contato>());
         egresso.getContatos().add(novoContato);
         repository.save(egresso);
@@ -71,8 +74,8 @@ public class EgressoService {
     }
 
     public Contato editarContato(Egresso egresso, Contato contatoEditado, Contato novoContato) {
-        //TODO: Checar existencia egresso e contatos
-       
+        verificarExistencia(egresso);
+
         contatoEditado.getEgressos().remove(egresso);
         egresso.getContatos().remove(contatoEditado);
 
@@ -82,7 +85,7 @@ public class EgressoService {
     }
 
     public void adicionarCurso(Egresso egresso, Curso curso, LocalDate dataInicio, LocalDate dataConclusao) {
-        // checar curso e egresso
+        verificarExistencia(egresso);
 
         CursoEgresso novoCursoEgresso = cursoEgressoRepo.save(
             CursoEgresso.builder()
@@ -122,6 +125,8 @@ public class EgressoService {
     }
 
     public void adicionarCargo(Egresso egresso, Cargo cargo, String nomeEmpresa, String descricao, LocalDate dataRegistro) {
+        verificarExistencia(egresso);
+
         ProfEgresso profEgresso = profEgressoRepo.save(
             ProfEgresso.builder()
             .egresso(egresso)
@@ -142,7 +147,8 @@ public class EgressoService {
     }
 
     public Boolean editarCargo(Egresso egresso, Cargo cargoAtual, Cargo novoCargo) {
-        
+        verificarExistencia(egresso);
+
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
             if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
                 continue;
@@ -161,7 +167,8 @@ public class EgressoService {
     }
 
     public Boolean editarFaixaSalario(Egresso egresso, Cargo cargoAtual, FaixaSalario novaFaixaSalario) {
-        
+        verificarExistencia(egresso);
+
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
             if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
                 continue;
@@ -209,9 +216,28 @@ public class EgressoService {
         return novoEgresso;
     }
 
-    public void delatar(Egresso egresso) {
-        
-        repository.delete(egresso);
+    private void verificarEgresso(Egresso egresso) {
+        if (egresso == null)
+            throw new RegraNegocioRunTime("Um Egresso valido deve ser informado");
+        if (egresso.getNome() == null || egresso.getNome().isBlank()) 
+            throw new RegraNegocioRunTime("Egresso deve possuir um nome");
+        if (egresso.getCpf() == null || egresso.getCpf().isBlank()) 
+            throw new RegraNegocioRunTime("Egresso deve possuir cpf");
+        if (egresso.getEmail() == null || egresso.getEmail().isBlank()) 
+            throw new RegraNegocioRunTime("Egresso deve possuir email");
+
+        Boolean existenciaEmail= repository.existsByEmail(egresso.getEmail());
+        Boolean existenciaCpf = repository.existsByCpf(egresso.getCpf());
+
+        if (existenciaEmail) 
+            throw new RegraNegocioRunTime("Email informado ja cadastrado");
+        if (existenciaCpf)
+            throw new RegraNegocioRunTime("Cpf informa ja cadastrado");
     }
 
+    private void verificarExistencia(Egresso egresso) {
+        if (!repository.existsById(egresso.getId())) {
+            throw new RegraNegocioRunTime("Egresso nao existe no banco");
+        }
+    }
 }

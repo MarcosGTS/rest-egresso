@@ -2,6 +2,7 @@ package com.egresso.ufma.service;
 
 import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.repository.FaixaSalarioRepository;
+import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,13 @@ public class FaixaSalarioService {
     FaixaSalarioRepository repository;
 
     public Integer consultarQuantidadeEgressos(FaixaSalario faixaSalario) {
-        //TODO: checar existencia egresso
+        verificarExistencia(faixaSalario);
         return repository.getNumberEgressos(faixaSalario.getId());
+    }
+    
+    private void verificarExistencia(FaixaSalario faixaSalario) {
+        if (! repository.existsById(faixaSalario.getId())) {
+            throw new RegraNegocioRunTime("Faixa de salario nao existe");
+        }
     }
 }

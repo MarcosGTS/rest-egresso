@@ -78,8 +78,6 @@ public class DepoimentoServiceTest {
 
         List<Depoimento> consulta = service.consultar();
 
-        
-
         Assertions.assertFalse(consulta.get(0).getData().isBefore(consulta.get(1).getData()));
 
     }
