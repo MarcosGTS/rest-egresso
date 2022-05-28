@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CursoRepository extends JpaRepository<Curso, Long>{
-    @Query()
+    @Query(value="SELECT e FROM Egresso e JOIN e.cursoEgressoAssoc c WHERE c.curso.id = ?1")
     public List<Egresso> getEgressos(Long curso_id);
-
-    @Query()
-    public Integer getNumberEgressos(Long curso_id);
 }

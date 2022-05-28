@@ -59,5 +59,5 @@ public class Egresso {
     private List<Contato> contatos;
 
     @OneToMany(mappedBy = "egresso")
-    private List<CursoEgresso> cursoEgresoAssoc;
+    private List<CursoEgresso> cursoEgressoAssoc;
 }

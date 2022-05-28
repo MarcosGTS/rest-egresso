@@ -70,7 +70,7 @@ public class DepoimentoServiceTest {
         Depoimento depoimento2 = Depoimento
         .builder()
         .texto("texto de teste")
-        .data(LocalDate.now())
+        .data(LocalDate.of(2001, 3, 1))
         .build(); 
 
         service.salvar(depoimento1);
@@ -78,7 +78,9 @@ public class DepoimentoServiceTest {
 
         List<Depoimento> consulta = service.consultar();
 
-        Assertions.assertTrue(consulta.get(0).getData().isAfter(consulta.get(1).getData()));
+        
+
+        Assertions.assertFalse(consulta.get(0).getData().isBefore(consulta.get(1).getData()));
 
     }
 
@@ -87,7 +89,7 @@ public class DepoimentoServiceTest {
         Depoimento depoimento1 = Depoimento
         .builder()
         .texto("texto de teste")
-        .data(LocalDate.of(2000, 3, 1))
+        .data(LocalDate.of(2002, 3, 1))
         .build(); 
 
         Depoimento salvo = service.salvar(depoimento1);
@@ -111,7 +113,7 @@ public class DepoimentoServiceTest {
         .builder()
         .egresso(salvo)
         .texto("texto de teste1")
-        .data(LocalDate.of(2000, 3, 1))
+        .data(LocalDate.of(2003, 3, 1))
         .build(); 
 
         Depoimento depoimento2 = Depoimento

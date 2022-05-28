@@ -16,10 +16,12 @@ public class CursoService {
     CursoRepository repository;
 
     public List<Egresso> consultarEgressos(Curso curso) {
+        // TODO: checar existencia do curso
         return repository.getEgressos(curso.getId());
     }
 
     public Integer consultarQuantidadeEgressos(Curso curso) {
-        return repository.getNumberEgressos(curso.getId());
+        // TODO: checar existencia do curso
+        return consultarEgressos(curso).size();
     }
 }
