@@ -20,7 +20,11 @@ public class CargoService {
         return repository.save(cargo);
     }
 
-    public Cargo editar(Cargo cargo, String nome, String descricao) {
+    public Cargo editar(Long id, String nome, String descricao) {
+        Cargo cargo = repository.findById(id).get();
+
+        // TODO: So alterar os campos fornecidos
+
         verificarCargo(cargo);
         cargo.setNome(nome);
         cargo.setDescricao(descricao);
@@ -29,21 +33,24 @@ public class CargoService {
         return salvar(cargo);
     }
 
-    public void deletar(Cargo cargo) {
-       
-        if (repository.existsById(cargo.getId())) {
-            repository.delete(cargo);
+    public Cargo deletar(Long id) {
+        
+        if (repository.existsById(id)) {
+            Cargo cargo = repository.findById(id).get();
+            repository.deleteById(id);
+            return cargo;
         } else {
             throw new RegraNegocioRunTime("Cargo escolhido para remocao ausente");
         }
             
     }
 
-    public List<Cargo> consultarCargoPorEgresso(Egresso egresso) {
-        return repository.getByEgresso(egresso.getId());
+    public List<Cargo> consultarCargoPorEgresso(Long id) {
+        return repository.getByEgresso(id);
     }
 
-    public Integer consultarQuantidadeEgressos(Cargo cargo) {
+    public Integer consultarQuantidadeEgressos(Long id) {
+        Cargo cargo = repository.findById(id).get();
         verificarCargo(cargo);
 
         return repository.getNumberGraduates(cargo.getId());

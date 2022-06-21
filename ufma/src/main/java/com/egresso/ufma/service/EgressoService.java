@@ -54,7 +54,9 @@ public class EgressoService {
         return repository.save(egresso);
     };
 
-    public void delatar(Egresso egresso) {
+    public void deletar(Long id) {
+        Egresso egresso = repository.findById(id).get();
+
         verificarExistencia(egresso);
         repository.delete(egresso);
     }

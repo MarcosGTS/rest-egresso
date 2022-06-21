@@ -42,14 +42,14 @@ public class ProfEgresso {
     private LocalDate data_registro;
 
     @ManyToOne
-    @JoinColumn(name = "id_egresso")
+    @JoinColumn(name = "egresso_id")
     private Egresso egresso;
 
     @ManyToOne
-    @JoinColumn(name = "id_cargo")
+    @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
     @ManyToOne
-    @JoinColumn(name = "id_faixa_salario")
+    @JoinColumn(name = "faixa_salario_id")
     private FaixaSalario faixaSalario;
 }

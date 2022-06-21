@@ -22,4 +22,5 @@ public interface EgressoRepository extends JpaRepository<Egresso, Long> {
 
     @Query(value = "SELECT p FROM ProfEgresso p JOIN FETCH p.cargo WHERE p.egresso.id = ?1")
     public LinkedList<ProfEgresso> findProfissoes(Long egresso_id);
+
 }

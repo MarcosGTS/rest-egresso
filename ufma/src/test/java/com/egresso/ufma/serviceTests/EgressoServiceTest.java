@@ -66,7 +66,7 @@ public class EgressoServiceTest {
     public void deveDeletarEgresso() {
         Egresso novoEgresso = criarEgressoExemplo();
         
-        service.delatar(novoEgresso);
+        service.deletar(novoEgresso.getId());
         Optional<Egresso> consulta = service.getEgresso(novoEgresso.getId());
 
         Assertions.assertFalse(consulta.isPresent());
@@ -89,6 +89,7 @@ public class EgressoServiceTest {
         Assertions.assertNotNull(consulta);
         Assertions.assertEquals(cargo.getId(), cargoConsulta.getId());
         Assertions.assertEquals(cargo.getDescricao(), cargoConsulta.getDescricao());
+
     }
 
     @Test
@@ -134,6 +135,7 @@ public class EgressoServiceTest {
         
         Assertions.assertNotNull(consultaContato.getEgressos());
         Assertions.assertEquals(novoEgresso.getId(), consultaContato.getEgressos().get(0).getId());
+
     }
 
     @Test
@@ -163,6 +165,7 @@ public class EgressoServiceTest {
         Assertions.assertEquals(novoCargo.getId(), consultaProfissao.getCargo().getId());
         Assertions.assertNotNull(consultaProfissao.getFaixaSalario());
         Assertions.assertEquals(novaFaixaSalario.getId(), consultaProfissao.getFaixaSalario().getId());
+
     }
 
     @Test

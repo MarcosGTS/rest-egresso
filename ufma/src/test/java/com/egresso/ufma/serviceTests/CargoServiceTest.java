@@ -61,7 +61,7 @@ public class CargoServiceTest {
 
         Cargo salvo = service.salvar(novoCargo);
 
-        service.deletar(salvo);
+        service.deletar(salvo.getId());
 
         Assertions.assertFalse(repository.existsById(salvo.getId()));
     }
@@ -80,10 +80,11 @@ public class CargoServiceTest {
         
         String novoNome = "Desenvolverdor Mobile";
         String novaDescricao = "Desenvolvimento voltado para sistemas de menor capacidade"; 
-        service.editar(salvo, novoNome, novaDescricao);
+        service.editar(salvo.getId(), novoNome, novaDescricao);
+        Cargo editado = repository.findById(salvo.getId()).get();
         
-        Assertions.assertEquals(novoNome, salvo.getNome());
-        Assertions.assertEquals(novaDescricao, salvo.getDescricao());
+        Assertions.assertEquals(novoNome, editado.getNome());
+        Assertions.assertEquals(novaDescricao, editado.getDescricao());
     }
 
     @Test
@@ -112,7 +113,7 @@ public class CargoServiceTest {
         novoCargo.setProfissoes(profissoes);
         novoEgresso.setProfissoes(profissoes);
 
-        List<Cargo> cargos = service.consultarCargoPorEgresso(novoEgresso);
+        List<Cargo> cargos = service.consultarCargoPorEgresso(novoEgresso.getId());
 
         Assertions.assertEquals(1, cargos.size());
         Assertions.assertEquals(novoCargo.getNome(), cargos.get(0).getNome());
@@ -149,7 +150,7 @@ public class CargoServiceTest {
         .egresso(egresso2)
         .build());
         
-        Integer consulta = service.consultarQuantidadeEgressos(novoCargo);
+        Integer consulta = service.consultarQuantidadeEgressos(novoCargo.getId());
 
         Assertions.assertEquals(2, consulta);
     }
