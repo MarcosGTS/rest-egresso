@@ -12,9 +12,8 @@ public class FaixaSalarioService {
     @Autowired
     FaixaSalarioRepository repository;
 
-    public Integer consultarQuantidadeEgressos(FaixaSalario faixaSalario) {
-        verificarExistencia(faixaSalario);
-        return repository.getNumberEgressos(faixaSalario.getId());
+    public Integer consultarQuantidadeEgressos(Long faixaSalarioId) {
+        return repository.getNumberEgressos(faixaSalarioId);
     }
     
     private void verificarExistencia(FaixaSalario faixaSalario) {

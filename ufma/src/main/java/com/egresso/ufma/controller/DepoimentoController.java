@@ -1,86 +1,86 @@
 package com.egresso.ufma.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.egresso.ufma.model.Cargo;
-import com.egresso.ufma.model.dto.CargoDTO;
-import com.egresso.ufma.service.CargoService;
+import com.egresso.ufma.model.Depoimento;
+import com.egresso.ufma.model.dto.DepoimentoDTO;
+import com.egresso.ufma.service.DepoimentoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 @RestController
-@RequestMapping("/api/cargos")
-public class CargoController {
+@RequestMapping("/api/depoimentos")
+public class DepoimentoController {
     
     @Autowired
-    CargoService service;
+    DepoimentoService service;
 
     @PostMapping
-    public ResponseEntity salvar(@RequestBody CargoDTO dto) {
-        Cargo cargo = Cargo.builder()
-            .nome(dto.getNome())
-            .descricao(dto.getDescricao())
+    public ResponseEntity salvar(@RequestBody DepoimentoDTO dto) {
+        Depoimento depoimento = Depoimento.builder()
+            .data(LocalDate.now())
+            .texto(dto.getTexto())
             .build();
-        
+
         try {
-            Cargo salvo = service.salvar(cargo);
-            return new ResponseEntity(salvo, HttpStatus.CREATED);
+            Depoimento salvo = service.salvar(depoimento);
+            return new ResponseEntity(salvo, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity editar(@PathVariable("id") Long id, @RequestBody CargoDTO dto) {
+    @PostMapping("{id}")
+    public ResponseEntity editar(@PathVariable("id") Long id, @RequestBody DepoimentoDTO dto) {
 
         try {
-            Cargo editado = service.editar(id, dto.getNome(), dto.getDescricao());
+            Depoimento editado = service.editar(id, dto.getTexto());
             return new ResponseEntity(editado, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity deletar(@PathVariable("id") Long id) {
-        
+    
         try {
-            Cargo deletado = service.deletar(id);
-            return new ResponseEntity(deletado, HttpStatus.OK);
+            Depoimento editado = service.remover(id);
+            return new ResponseEntity(editado, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity obterQuantitativo(@PathVariable("id") Long id) {
-
+    @GetMapping
+    public ResponseEntity obterDepoimentos() {
+        
         try {
-            Integer quantidade = service.consultarQuantidadeEgressos(id);
-            return new ResponseEntity(quantidade, HttpStatus.OK);
+            List<Depoimento> depoimentos = service.consultar();
+            return new ResponseEntity(depoimentos, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/egresso/{id}")
-    public ResponseEntity obterCargos(@PathVariable("id") Long id) {
-
+    public ResponseEntity depoimentoEgresso(@PathVariable("id") Long id) {
+        
         try {
-            List<Cargo> cargos = service.consultarCargoPorEgresso(id);
-            return new ResponseEntity(cargos, HttpStatus.OK);
+            List<Depoimento> depoimento = service.consultarPorEgresso(id);
+            return new ResponseEntity(depoimento, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

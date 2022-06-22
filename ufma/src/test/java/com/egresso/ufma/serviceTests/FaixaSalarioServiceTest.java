@@ -62,7 +62,7 @@ public class FaixaSalarioServiceTest {
         .faixaSalario(novaFaixaSalario)
         .build());
 
-        Integer consulta = service.consultarQuantidadeEgressos(novaFaixaSalario);
+        Integer consulta = service.consultarQuantidadeEgressos(novaFaixaSalario.getId());
 
         Assertions.assertEquals(2, consulta);
     }

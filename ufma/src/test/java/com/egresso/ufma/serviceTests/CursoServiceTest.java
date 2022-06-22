@@ -68,7 +68,7 @@ public class CursoServiceTest {
         .egresso(egresso2)
         .build());
 
-        List<Egresso> consulta = service.consultarEgressos(novoCurso);
+        List<Egresso> consulta = service.consultarEgressos(novoCurso.getId());
 
         Assertions.assertEquals(2, consulta.size());
         Assertions.assertEquals(egresso1.getNome(), consulta.get(0).getNome());
@@ -107,7 +107,7 @@ public class CursoServiceTest {
         .egresso(egresso2)
         .build());
 
-        Integer consulta = service.consultarQuantidadeEgressos(novoCurso);
+        Integer consulta = service.consultarQuantidadeEgressos(novoCurso.getId());
 
         Assertions.assertEquals(2, consulta);
     }

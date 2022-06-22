@@ -3,7 +3,6 @@ package com.egresso.ufma.service;
 import java.util.List;
 
 import com.egresso.ufma.model.Cargo;
-import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.repository.CargoRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 

@@ -22,12 +22,17 @@ public class DepoimentoService {
         return repository.save(depoimento);
     }
     
-    public void remover(Depoimento depoimento) {
+    public Depoimento remover(Long id) {
+        Depoimento depoimento = repository.findById(id).get();
         verificarExistencia(depoimento);
         repository.deleteById(depoimento.getId());
+
+        return depoimento;
     }
 
-    public Depoimento editar(Depoimento depoimento, String text) {
+    public Depoimento editar(Long id, String text) {
+        Depoimento depoimento = repository.findById(id).get();
+
         verificarExistencia(depoimento);
         depoimento.setTexto(text);
         depoimento.setData(LocalDate.now());
@@ -40,8 +45,8 @@ public class DepoimentoService {
         return repository.consultarDepoimentos();
     }
 
-    public List<Depoimento> consultarPorEgresso(Egresso egresso) {
-        return repository.findByEgresso(egresso.getId());
+    public List<Depoimento> consultarPorEgresso(Long egressoId) {
+        return repository.findByEgresso(egressoId);
     }
 
     private void verificarDepoimento(Depoimento depoimento) {

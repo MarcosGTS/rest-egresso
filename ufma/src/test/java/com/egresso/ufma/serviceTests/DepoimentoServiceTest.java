@@ -54,7 +54,7 @@ public class DepoimentoServiceTest {
         .build(); 
 
         Depoimento salvo = service.salvar(depoimento1);
-        service.remover(salvo);
+        service.remover(salvo.getId());
 
         Assertions.assertFalse(repository.existsById(salvo.getId()));
     }
@@ -93,7 +93,7 @@ public class DepoimentoServiceTest {
         Depoimento salvo = service.salvar(depoimento1);
 
         String novoTexto = "novo Depoimento";
-        service.editar(salvo, novoTexto);
+        service.editar(salvo.getId(), novoTexto);
 
         Assertions.assertEquals(salvo.getTexto(), novoTexto);
         Assertions.assertNotEquals(salvo.getData(), LocalDate.of(2000, 3, 1));
@@ -131,7 +131,7 @@ public class DepoimentoServiceTest {
         service.salvar(depoimento2);
         service.salvar(depoimento3);
 
-        List<Depoimento> depoimentos = service.consultarPorEgresso(salvo);
+        List<Depoimento> depoimentos = service.consultarPorEgresso(salvo.getId());
 
         Assertions.assertEquals(2, depoimentos.size());
     }

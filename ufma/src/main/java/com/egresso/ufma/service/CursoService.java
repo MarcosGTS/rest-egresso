@@ -16,14 +16,12 @@ public class CursoService {
     @Autowired
     CursoRepository repository;
 
-    public List<Egresso> consultarEgressos(Curso curso) {
-        verificarCurso(curso);
-        return repository.getEgressos(curso.getId());
+    public List<Egresso> consultarEgressos(Long cursoId) {
+        return repository.getEgressos(cursoId);
     }
 
-    public Integer consultarQuantidadeEgressos(Curso curso) {
-        verificarCurso(curso);
-        return consultarEgressos(curso).size();
+    public Integer consultarQuantidadeEgressos(Long cursoId) {
+        return consultarEgressos(cursoId).size();
     }
 
     public void verificarCurso(Curso curso) {
