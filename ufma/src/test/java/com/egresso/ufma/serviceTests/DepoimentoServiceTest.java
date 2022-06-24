@@ -95,8 +95,10 @@ public class DepoimentoServiceTest {
         String novoTexto = "novo Depoimento";
         service.editar(salvo.getId(), novoTexto);
 
-        Assertions.assertEquals(salvo.getTexto(), novoTexto);
-        Assertions.assertNotEquals(salvo.getData(), LocalDate.of(2000, 3, 1));
+        Depoimento editado = repository.findById(salvo.getId()).get();
+
+        Assertions.assertEquals(editado.getTexto(), novoTexto);
+        Assertions.assertNotEquals(editado.getData(), LocalDate.of(2000, 3, 1));
     }
 
     @Test

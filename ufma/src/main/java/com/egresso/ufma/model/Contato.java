@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +33,6 @@ public class Contato {
     @Column(name = "url_logo")
     private String url_logo;
 
-    @ManyToMany(mappedBy = "contatos")
-    private List<Egresso> egressos;
+    @OneToMany(mappedBy = "contato")
+    private List<ContatoEgresso> egressos;
 }

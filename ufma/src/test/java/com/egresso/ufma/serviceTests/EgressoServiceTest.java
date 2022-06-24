@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.Contato;
+import com.egresso.ufma.model.ContatoEgresso;
 import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.CursoEgresso;
 import com.egresso.ufma.model.Egresso;
@@ -81,7 +82,7 @@ public class EgressoServiceTest {
         String descricaoEmpresa = "Descricao teste";
         LocalDate dataRegistro = LocalDate.now();
 
-        service.adicionarCargo(egresso, cargo, nomeEmpresa, descricaoEmpresa, dataRegistro);
+        service.adicionarCargo(egresso.getId(), cargo.getId(), nomeEmpresa, descricaoEmpresa, dataRegistro);
         
         Egresso consulta = service.getFullEgresso(egresso.getId());
         Cargo cargoConsulta = consulta.getProfissoes().get(0).getCargo();
@@ -100,7 +101,7 @@ public class EgressoServiceTest {
         LocalDate dataInicio = LocalDate.of(2001, 03, 27);
         LocalDate dataConclusao = LocalDate.now();
 
-        service.adicionarCurso(egresso, curso, dataInicio, dataConclusao);
+        service.adicionarCurso(egresso.getId(), curso.getId(), dataInicio, dataConclusao);
 
         Egresso consulta = service.getFullEgresso(egresso.getId());
         CursoEgresso cursoEgresso =  consulta.getCursoEgressoAssoc().get(0);
@@ -121,7 +122,8 @@ public class EgressoServiceTest {
         Egresso novoEgresso = criarEgressoExemplo();
         Contato novoContato = criarContatoExemplo();
 
-        service.adicionarContato(novoEgresso, novoContato);
+        String endereco = "https://teste.com";
+        service.adicionarContato(novoEgresso.getId(), novoContato.getId(), endereco);
 
         Egresso consulta = service.getFullEgresso(novoEgresso.getId());
 
@@ -129,14 +131,18 @@ public class EgressoServiceTest {
         Assertions.assertNotNull(consulta.getContatos());
         Assertions.assertNotEquals(0, consulta.getContatos().size());
 
-        Contato consultaContato = consulta.getContatos().get(0);
-        Assertions.assertEquals(novoContato.getId(), consultaContato.getId());
-        Assertions.assertEquals(novoContato.getNome(), consultaContato.getNome());
+        ContatoEgresso consultaContato = consulta.getContatos().get(0);
+        Assertions.assertEquals(novoContato.getId(), consultaContato.getId().getEgresso_id());
+        Assertions.assertEquals(novoContato.getNome(), consultaContato.getContato().getNome());
         
-        Assertions.assertNotNull(consultaContato.getEgressos());
-        Assertions.assertEquals(novoEgresso.getId(), consultaContato.getEgressos().get(0).getId());
+        Assertions.assertNotNull(consultaContato.getEgresso());
+        Assertions.assertEquals(novoEgresso.getId(), consultaContato.getEgresso().getId());
 
     }
+
+    //TODO: DeveEditarCurso
+    //TODO: DeveEditarCargo
+    //TODO: DeveEditarContato
 
     @Test
     public void deveEditarFaixaSalarioApartirDoEgresso() {
@@ -148,8 +154,8 @@ public class EgressoServiceTest {
         String descricao = "descricao teste";
         LocalDate dataRegistro = LocalDate.now();
 
-        service.adicionarCargo(novoEgresso, novoCargo, nomeEmpresa, descricao, dataRegistro);
-        service.editarFaixaSalario(novoEgresso, novoCargo, novaFaixaSalario);
+        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), nomeEmpresa, descricao, dataRegistro);
+        service.editarFaixaSalario(novoEgresso.getId(), novoCargo.getId(), novaFaixaSalario.getId());
 
         Egresso consulta = service.getFullEgresso(novoEgresso.getId());
         FaixaSalario consultaFaixaSalario = faixaSalarioRepo.getById(novaFaixaSalario.getId());
@@ -183,16 +189,18 @@ public class EgressoServiceTest {
         LocalDate dataInicio = LocalDate.of(2001, 03, 27);
         LocalDate dataConclusao = LocalDate.now();
 
-        service.adicionarCargo(novoEgresso, novoCargo, nomeEmpresa, descricaoEmpresa, dataRegistroEmpresa);
-        service.editarFaixaSalario(novoEgresso, novoCargo, novaFaixaSalario);
-        service.adicionarCurso(novoEgresso, novoCurso, dataInicio, dataConclusao);
-        service.adicionarContato(novoEgresso, novoContato);
+        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), nomeEmpresa, descricaoEmpresa, dataRegistroEmpresa);
+        service.editarFaixaSalario(novoEgresso.getId(), novoCargo.getId(), novaFaixaSalario.getId());
+        service.adicionarCurso(novoEgresso.getId(), novoCurso.getId(), dataInicio, dataConclusao);
+        
+        String endereco = "https://teste.com";
+        service.adicionarContato(novoEgresso.getId(), novoContato.getId(), endereco);
 
         Egresso consulta = service.getFullEgresso(novoEgresso.getId());
 
         Assertions.assertNotNull(consulta);
         Assertions.assertEquals(novoEgresso.getNome(), consulta.getNome());
-        Assertions.assertEquals(novoContato.getId(), consulta.getContatos().get(0).getId());
+        Assertions.assertEquals(novoContato.getId(), consulta.getContatos().get(0).getId().getContato_id());
         Assertions.assertEquals(novoCurso.getId(), consulta.getCursoEgressoAssoc().get(0).getCurso().getId());
         Assertions.assertEquals(novoCargo.getId(), consulta.getProfissoes().get(0).getCargo().getId());    
         Assertions.assertEquals(1, consulta.getProfissoes().size()); 
@@ -207,7 +215,7 @@ public class EgressoServiceTest {
         .nome("Marcos")
         .email("teste@teste.com")
         .cpf("111.111.111-11")
-        .contatos(new LinkedList<Contato>())
+        .contatos(new LinkedList<ContatoEgresso>())
         .cursoEgressoAssoc(new LinkedList<CursoEgresso>())
         .profissoes(new LinkedList<ProfEgresso>())
         .build());
@@ -241,7 +249,7 @@ public class EgressoServiceTest {
         .builder()
         .nome("nome Contato")
         .url_logo("url img")
-        .egressos(new LinkedList<Egresso>())
+        .egressos(new LinkedList<ContatoEgresso>())
         .build());
 
         return contato;

@@ -9,4 +9,6 @@ public interface FaixaSalarioRepository extends JpaRepository<FaixaSalario, Long
     @Query(value="SELECT COUNT(e) FROM Egresso e JOIN e.profissoes p WHERE p.faixaSalario.id = ?1")
     public Integer getNumberEgressos(Long faixaSalario_id);
 
+    @Query(value="SELECT f FROM FaixaSalario f LEFT JOIN FETCH f.profissoes WHERE f.id = ?1")
+    public FaixaSalario findCompleteFaixaSalario(Long id);
 }

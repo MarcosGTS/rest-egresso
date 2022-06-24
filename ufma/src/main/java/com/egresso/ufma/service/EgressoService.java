@@ -7,13 +7,17 @@ import java.util.Optional;
 
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.Contato;
+import com.egresso.ufma.model.ContatoEgresso;
+import com.egresso.ufma.model.ContatoEgressoPk;
 import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.CursoEgresso;
 import com.egresso.ufma.model.CursoEgressoPk;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.model.ProfEgresso;
+import com.egresso.ufma.model.dto.ProfEgressoDTO;
 import com.egresso.ufma.repository.CargoRepository;
+import com.egresso.ufma.repository.ContatoEgressoRespository;
 import com.egresso.ufma.repository.ContatoRepository;
 import com.egresso.ufma.repository.CursoEgressoRepository;
 import com.egresso.ufma.repository.CursoRepository;
@@ -41,6 +45,9 @@ public class EgressoService {
     ContatoRepository contatoRepo;
 
     @Autowired
+    ContatoEgressoRespository contatoEgressoRepo;
+
+    @Autowired
     CargoRepository cargoRepo;
 
     @Autowired
@@ -61,32 +68,60 @@ public class EgressoService {
         repository.delete(egresso);
     }
 
-    public List<Contato> adicionarContato(Egresso egresso, Contato novoContato) {
+    public Egresso adicionarContato(Long egressoId, Long contatoId, String endereco) {
+        
+        Egresso egresso = getFullEgresso(egressoId);
+        Contato contato = contatoRepo.findCompleteContato(contatoId);
+
+        //validacoes
         verificarExistencia(egresso);
 
-        if (egresso.getContatos() == null) egresso.setContatos(new LinkedList<Contato>());
+        ContatoEgresso novoContato = contatoEgressoRepo.save(
+            ContatoEgresso.builder()
+            .id(new ContatoEgressoPk(egressoId, contatoId))
+            .egresso(egresso)
+            .contato(contato)
+            .endereco(endereco)
+            .build()
+        );
+        
+        if (egresso.getContatos() == null) egresso.setContatos(new LinkedList<ContatoEgresso>()); 
         egresso.getContatos().add(novoContato);
         repository.save(egresso);
         
-        if (novoContato.getEgressos() == null) novoContato.setEgressos(new LinkedList<Egresso>());
-        novoContato.getEgressos().add(egresso);
-        contatoRepo.save(novoContato);
 
-        return egresso.getContatos();
+        if (contato.getEgressos() == null) contato.setEgressos(new LinkedList<ContatoEgresso>());
+        contato.getEgressos().add(novoContato);
+        contatoRepo.save(contato);
+
+        return egresso;
     }
 
-    public Contato editarContato(Egresso egresso, Contato contatoEditado, Contato novoContato) {
+    public ContatoEgresso editarContato(Long egressoId, Long contatoId, Long novoContatoId, String endereco) {
+        Egresso egresso = repository.findById(egressoId).get();
+        Contato contato = contatoRepo.findById(contatoId).get();
+        Contato novoContato = contatoRepo.findById(novoContatoId).get();
+
+        ContatoEgressoPk contatoEgressoK = new ContatoEgressoPk(egressoId, contatoId);
+        ContatoEgresso contatoEgresso = contatoEgressoRepo.findById(contatoEgressoK).get();
+
         verificarExistencia(egresso);
 
-        contatoEditado.getEgressos().remove(egresso);
-        egresso.getContatos().remove(contatoEditado);
-
-        adicionarContato(egresso, novoContato);
+        if (endereco != null) 
+            contatoEgresso.setEndereco(endereco);
         
-        return novoContato;
+        if (novoContato != null) {
+            contatoEgresso.setContato(novoContato);
+            contato.getEgressos().remove(contatoEgresso);
+        }
+        
+        return contatoEgresso;
     }
 
-    public void adicionarCurso(Egresso egresso, Curso curso, LocalDate dataInicio, LocalDate dataConclusao) {
+    public Curso adicionarCurso(Long egressoId, Long cursoId, LocalDate dataInicio, LocalDate dataConclusao) {
+        Egresso egresso = getFullEgresso(egressoId);
+        Curso curso = cursoRepo.findCompleteCurso(cursoId);
+
         verificarExistencia(egresso);
 
         CursoEgresso novoCursoEgresso = cursoEgressoRepo.save(
@@ -105,10 +140,15 @@ public class EgressoService {
         if (curso.getCursoEgressoAssoc() == null) curso.setCursoEgressoAssoc(new LinkedList<CursoEgresso>());
         curso.getCursoEgressoAssoc().add(novoCursoEgresso);
         cursoRepo.save(curso);
+
+        return curso;
     }
 
-    public Boolean editarCurso(Egresso egresso, Curso cursoAtual, Curso novoCurso) {
-        
+    public Curso editarCurso(Long egressoId, Long cursoAtualId, Long novoCursoId, LocalDate dataInicio, LocalDate dataConclusao) {
+        Egresso egresso = getFullEgresso(egressoId);
+        Curso cursoAtual = cursoRepo.findCompleteCurso(cursoAtualId);
+        Curso novoCurso = cursoRepo.findCompleteCurso(novoCursoId);
+
         for (CursoEgresso cursoEgresso : egresso.getCursoEgressoAssoc()) {
             if (cursoEgresso.getId().getCurso_id() != cursoAtual.getId())
                 continue;
@@ -119,14 +159,20 @@ public class EgressoService {
 
             if (novoCurso.getCursoEgressoAssoc() == null) novoCurso.setCursoEgressoAssoc(new LinkedList<CursoEgresso>()); 
             novoCurso.getCursoEgressoAssoc().add(cursoEgresso);
-           
-            return true;
+            
+            if (dataInicio != null) cursoEgresso.setData_inicio(dataInicio);
+            if (dataConclusao != null) cursoEgresso.setData_conclusao(dataConclusao);
+
+            return novoCurso;
         }
         
-        return false;
+        return null;
     }
 
-    public void adicionarCargo(Egresso egresso, Cargo cargo, String nomeEmpresa, String descricao, LocalDate dataRegistro) {
+    public Cargo adicionarCargo(Long egressoId, Long cargoId, String nomeEmpresa, String descricao, LocalDate dataRegistro) {
+        Egresso egresso = getFullEgresso(egressoId);
+        Cargo cargo = cargoRepo.findCompleteCargo(cargoId);
+        
         verificarExistencia(egresso);
 
         ProfEgresso profEgresso = profEgressoRepo.save(
@@ -146,9 +192,14 @@ public class EgressoService {
         cargo.getProfissoes().add(profEgresso);
         cargoRepo.save(cargo);
 
+        return cargoRepo.save(cargo);
     }
 
-    public Boolean editarCargo(Egresso egresso, Cargo cargoAtual, Cargo novoCargo) {
+    public Cargo editarCargo(Long egressoId, Long cargoAtualId, Long novoCargoId, ProfEgressoDTO dto) {
+        Egresso egresso = getFullEgresso(egressoId);
+        Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoAtualId);
+        Cargo novoCargo = cargoRepo.findCompleteCargo(novoCargoId);
+
         verificarExistencia(egresso);
 
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
@@ -162,13 +213,26 @@ public class EgressoService {
             if (novoCargo.getProfissoes() == null) novoCargo.setProfissoes(new LinkedList<ProfEgresso>());
             novoCargo.getProfissoes().add(profEgresso);
 
-            return true;
+            //TODO: Validar data
+            String novoNome = dto.getNomeEmpresa();
+            String novaDescricao = dto.getDescricao();
+            LocalDate novaDataRegistro = LocalDate.parse(dto.getDataRegistro());
+
+            if (novoNome != null) profEgresso.setEmpresa(novoNome);
+            if (novaDescricao != null) profEgresso.setDescricao(novaDescricao);
+            if (novaDataRegistro != null) profEgresso.setData_registro(novaDataRegistro);;
+
+            return novoCargo;
         }
 
-        return false;
+        return null;
     }
 
-    public Boolean editarFaixaSalario(Egresso egresso, Cargo cargoAtual, FaixaSalario novaFaixaSalario) {
+    public FaixaSalario editarFaixaSalario(Long egressoId, Long cargoId, Long faixaSalarioId) {
+        Egresso egresso = getFullEgresso(egressoId);
+        Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoId);
+        FaixaSalario novaFaixaSalario = faixaSalarioRepo.findCompleteFaixaSalario(faixaSalarioId);
+        
         verificarExistencia(egresso);
 
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
@@ -182,10 +246,10 @@ public class EgressoService {
             profEgresso.setFaixaSalario(novaFaixaSalario);
             profEgressoRepo.save(profEgresso);
 
-            return true;
+            return novaFaixaSalario;
         }
         
-        return false;
+        return null;
     }
 
     public Optional<Egresso> getEgresso(Long egresso_id) {
@@ -197,13 +261,13 @@ public class EgressoService {
         Egresso consulta = repository.findById(egresso_id).get();
 
         Egresso novoEgresso = Egresso
-        .builder()
-        .id(consulta.getId())
-        .nome(consulta.getNome())
-        .cpf(consulta.getCpf())
-        .email(consulta.getEmail())
-        .resumo(consulta.getResumo())
-        .build();
+            .builder()
+            .id(consulta.getId())
+            .nome(consulta.getNome())
+            .cpf(consulta.getCpf())
+            .email(consulta.getEmail())
+            .resumo(consulta.getResumo())
+            .build();
 
         novoEgresso.setContatos(repository.findContatos(egresso_id));
         novoEgresso.setCursoEgressoAssoc(repository.findCursoEgressos(egresso_id));

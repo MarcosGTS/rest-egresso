@@ -6,5 +6,4 @@ import com.egresso.ufma.model.CursoEgressoPk;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CursoEgressoRepository extends JpaRepository <CursoEgresso, CursoEgressoPk> {
-    
 }

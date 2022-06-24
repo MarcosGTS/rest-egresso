@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.egresso.ufma.model.Depoimento;
-import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.repository.DepoimentoRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -38,7 +37,7 @@ public class DepoimentoService {
         depoimento.setData(LocalDate.now());
         verificarDepoimento(depoimento);
 
-        return depoimento;
+        return repository.save(depoimento);
     }
 
     public List<Depoimento> consultar() {

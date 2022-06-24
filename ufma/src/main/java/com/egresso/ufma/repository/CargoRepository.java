@@ -14,4 +14,7 @@ public interface CargoRepository extends JpaRepository<Cargo, Long> {
 
     @Query(value="SELECT COUNT(e) FROM Egresso e join e.profissoes p WHERE p.cargo.id = ?1")
     public Integer getNumberGraduates(Long cargo_id);
+
+    @Query(value="SELECT c FROM Cargo c LEFT JOIN FETCH c.profissoes WHERE c.id = ?1")
+    public Cargo findCompleteCargo(Long id);
 }

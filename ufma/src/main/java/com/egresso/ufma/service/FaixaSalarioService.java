@@ -1,6 +1,5 @@
 package com.egresso.ufma.service;
 
-import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.repository.FaixaSalarioRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -13,11 +12,12 @@ public class FaixaSalarioService {
     FaixaSalarioRepository repository;
 
     public Integer consultarQuantidadeEgressos(Long faixaSalarioId) {
+        verificarExistencia(faixaSalarioId);
         return repository.getNumberEgressos(faixaSalarioId);
     }
     
-    private void verificarExistencia(FaixaSalario faixaSalario) {
-        if (! repository.existsById(faixaSalario.getId())) {
+    private void verificarExistencia(Long faixaSalrioId) {
+        if (! repository.existsById(faixaSalrioId)) {
             throw new RegraNegocioRunTime("Faixa de salario nao existe");
         }
     }
