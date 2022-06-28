@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DatasDTO {
-    private String dataIncio;
-    private String dataConlcusao;
+    private String dataInicio;
+    private String dataConclusao;
 }

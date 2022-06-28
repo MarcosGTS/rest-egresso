@@ -178,6 +178,7 @@ public class EgressoService {
         
         verificarExistencia(egresso);
 
+        
         ProfEgresso profEgresso = profEgressoRepo.save(
             ProfEgresso.builder()
             .egresso(egresso)

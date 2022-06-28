@@ -44,6 +44,7 @@ public class Egresso {
     @Column(name = "url_foto")
     private String url_foto;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "egresso")
     private List<Depoimento> depoimentos;
     

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egresso.ufma.model.Cargo;
-import com.egresso.ufma.model.Contato;
 import com.egresso.ufma.model.ContatoEgresso;
 import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.Egresso;
@@ -56,8 +55,8 @@ public class EgressoController {
     public ResponseEntity adicionarCurso(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idCurso") Long idCurso ,@RequestBody DatasDTO dto) {
 
         try {
-            LocalDate dataInicio = LocalDate.parse(dto.getDataIncio());
-            LocalDate dataConclusao = LocalDate.parse(dto.getDataConlcusao());
+            LocalDate dataInicio = LocalDate.parse(dto.getDataInicio());
+            LocalDate dataConclusao = LocalDate.parse(dto.getDataConclusao());
 
             Curso adicionado = service.adicionarCurso(idEgresso, idCurso, dataInicio, dataConclusao);
             return new ResponseEntity(adicionado, HttpStatus.OK);
@@ -72,8 +71,8 @@ public class EgressoController {
         @PathVariable("idNovoCurso") Long idNovoCurso, @RequestBody DatasDTO dto) {
     
         try {
-            LocalDate dataInicio = LocalDate.parse(dto.getDataIncio());
-            LocalDate dataConclusao = LocalDate.parse(dto.getDataConlcusao());
+            LocalDate dataInicio = LocalDate.parse(dto.getDataInicio());
+            LocalDate dataConclusao = LocalDate.parse(dto.getDataConclusao());
 
             Curso editado = service.editarCurso(idEgresso, idCurso, idNovoCurso, dataInicio, dataConclusao);
             return new ResponseEntity(editado, HttpStatus.OK);
@@ -121,7 +120,7 @@ public class EgressoController {
     
     }
 
-    @PostMapping("/{idEgresso}/contato/{idContato}/{idNovoContato}")
+    @PutMapping("/{idEgresso}/contato/{idContato}/{idNovoContato}")
     public ResponseEntity editarContato(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idContato") Long idContato,
         @PathVariable("idNovoContato") Long idNovoContato, @RequestBody ContatoDTO dto) {
 
