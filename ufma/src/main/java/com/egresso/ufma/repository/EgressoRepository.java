@@ -14,7 +14,7 @@ public interface EgressoRepository extends JpaRepository<Egresso, Long> {
     public Boolean existsByEmail(String email);
     public Boolean existsByCpf(String cpf);
 
-    @Query(value = "SELECT c FROM ContatoEgresso c LEFT JOIN FETCH c.contato WHERE c.egresso.id = ?1")
+    @Query(value = "SELECT ce FROM ContatoEgresso ce LEFT JOIN FETCH ce.contato c WHERE ce.egresso.id = ?1")
     public LinkedList<ContatoEgresso> findContatos(Long egresso_id);
 
     @Query(value = "SELECT ce FROM CursoEgresso ce LEFT JOIN FETCH ce.curso WHERE ce.egresso.id = ?1")

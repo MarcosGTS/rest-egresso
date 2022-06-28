@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.Contato;
+import com.egresso.ufma.model.ContatoEgresso;
 import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.model.FaixaSalario;
+import com.egresso.ufma.model.dto.ContatoDTO;
 import com.egresso.ufma.model.dto.DatasDTO;
 import com.egresso.ufma.model.dto.EgressoDTO;
 import com.egresso.ufma.model.dto.ProfEgressoDTO;
@@ -25,7 +27,7 @@ import com.egresso.ufma.service.EgressoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 @RestController
-@RequestMapping("/api/egresso")
+@RequestMapping("/api/egressos")
 public class EgressoController {
     
     @Autowired
@@ -105,12 +107,34 @@ public class EgressoController {
         }
     
     }
+
+    @PostMapping("/{idEgresso}/contato/{idContato}")
+    public ResponseEntity adicionarContato(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idContato") Long idContato,
+        @RequestBody ContatoDTO dto) {
+
+        try {
+            ContatoEgresso editado = service.adicionarContato(idEgresso, idContato, dto.getEndereco());
+            return new ResponseEntity(editado, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     
-    public ResponseEntity editarContato() {
-        return null;
+    }
+
+    @PostMapping("/{idEgresso}/contato/{idContato}/{idNovoContato}")
+    public ResponseEntity editarContato(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idContato") Long idContato,
+        @PathVariable("idNovoContato") Long idNovoContato, @RequestBody ContatoDTO dto) {
+
+        try {
+            ContatoEgresso editado = service.editarContato(idEgresso, idContato, idNovoContato, dto.getEndereco());
+            return new ResponseEntity(editado, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     //deletar egresso
+    //TODO: adicionar atributo de inatividade
     @PutMapping("/{idEgresso}/faixaSalario/{idCargo}/{idFaixaSalario}")
     public ResponseEntity editarFaixaSalario(@PathVariable("idEgresso") Long idEgresso,
         @PathVariable("idCargo") Long idCargo, @PathVariable("idFaixaSalario") Long idFaixaSalario) {

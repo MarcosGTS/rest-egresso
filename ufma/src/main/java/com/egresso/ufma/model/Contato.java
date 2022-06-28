@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +35,7 @@ public class Contato {
     @Column(name = "url_logo")
     private String url_logo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "contato")
     private List<ContatoEgresso> egressos;
 }

@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,11 +28,12 @@ public class ContatoEgresso {
     @Column(name="endereco")
     private String endereco;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_egresso")
+    @JoinColumn(name = "egresso_id", insertable=false, updatable=false)
     private Egresso egresso;
 
     @ManyToOne
-    @JoinColumn(name = "id_contato")
+    @JoinColumn(name = "contato_id", insertable=false, updatable=false)
     private Contato contato;
 }

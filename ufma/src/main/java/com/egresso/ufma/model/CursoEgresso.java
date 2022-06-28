@@ -12,6 +12,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,12 +37,13 @@ public class CursoEgresso {
     @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
     private LocalDate data_conclusao;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_egresso")
+    @JoinColumn(name = "egresso_id", insertable=false, updatable=false)
     private Egresso egresso;
     
     @ManyToOne
-    @JoinColumn(name = "id_curso")
+    @JoinColumn(name = "curso_id", insertable=false, updatable=false)
     private Curso curso;
 }
 

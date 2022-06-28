@@ -28,6 +28,7 @@ import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EgressoService {
@@ -68,7 +69,7 @@ public class EgressoService {
         repository.delete(egresso);
     }
 
-    public Egresso adicionarContato(Long egressoId, Long contatoId, String endereco) {
+    public ContatoEgresso adicionarContato(Long egressoId, Long contatoId, String endereco) {
         
         Egresso egresso = getFullEgresso(egressoId);
         Contato contato = contatoRepo.findCompleteContato(contatoId);
@@ -94,7 +95,7 @@ public class EgressoService {
         contato.getEgressos().add(novoContato);
         contatoRepo.save(contato);
 
-        return egresso;
+        return novoContato;
     }
 
     public ContatoEgresso editarContato(Long egressoId, Long contatoId, Long novoContatoId, String endereco) {
@@ -154,11 +155,13 @@ public class EgressoService {
                 continue;
 
             //Atualiza relacoes entre as tabelas
-            cursoAtual.getCursoEgressoAssoc().remove(cursoEgresso);
-            cursoEgresso.getId().setCurso_id(novoCurso.getId());
-
-            if (novoCurso.getCursoEgressoAssoc() == null) novoCurso.setCursoEgressoAssoc(new LinkedList<CursoEgresso>()); 
-            novoCurso.getCursoEgressoAssoc().add(cursoEgresso);
+            if(novoCursoId != null) {
+                cursoAtual.getCursoEgressoAssoc().remove(cursoEgresso);
+                cursoEgresso.getId().setCurso_id(novoCurso.getId());
+    
+                if (novoCurso.getCursoEgressoAssoc() == null) novoCurso.setCursoEgressoAssoc(new LinkedList<CursoEgresso>()); 
+                novoCurso.getCursoEgressoAssoc().add(cursoEgresso);
+            }
             
             if (dataInicio != null) cursoEgresso.setData_inicio(dataInicio);
             if (dataConclusao != null) cursoEgresso.setData_conclusao(dataConclusao);
@@ -256,6 +259,7 @@ public class EgressoService {
         return repository.findById(egresso_id);
     }
 
+    @Transactional
     public Egresso getFullEgresso(Long egresso_id) {
 
         Egresso consulta = repository.findById(egresso_id).get();
@@ -269,6 +273,7 @@ public class EgressoService {
             .resumo(consulta.getResumo())
             .build();
 
+            
         novoEgresso.setContatos(repository.findContatos(egresso_id));
         novoEgresso.setCursoEgressoAssoc(repository.findCursoEgressos(egresso_id));
         novoEgresso.setProfissoes(repository.findProfissoes(egresso_id));

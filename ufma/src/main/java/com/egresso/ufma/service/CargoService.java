@@ -22,11 +22,9 @@ public class CargoService {
     public Cargo editar(Long id, String nome, String descricao) {
         Cargo cargo = repository.findById(id).get();
 
-        // TODO: So alterar os campos fornecidos
-
-        verificarCargo(cargo);
-        cargo.setNome(nome);
-        cargo.setDescricao(descricao);
+        if (nome != null) cargo.setNome(nome);
+        if (descricao != null) cargo.setDescricao(descricao);
+        
         verificarCargo(cargo);
         
         return salvar(cargo);

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.egresso.ufma.model.Depoimento;
+import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.repository.DepoimentoRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -32,9 +33,9 @@ public class DepoimentoService {
     public Depoimento editar(Long id, String text) {
         Depoimento depoimento = repository.findById(id).get();
 
-        verificarExistencia(depoimento);
-        depoimento.setTexto(text);
+        if (text != null) depoimento.setTexto(text);
         depoimento.setData(LocalDate.now());
+
         verificarDepoimento(depoimento);
 
         return repository.save(depoimento);
@@ -55,6 +56,14 @@ public class DepoimentoService {
             throw new RegraNegocioRunTime("Texto nao pode estar vazio");
         if (depoimento.getData() == null)
             throw new RegraNegocioRunTime("Depoimento deve possuir data de postagem");
+
+        Egresso egresso = depoimento.getEgresso();
+
+        if (egresso.getDepoimentos().size() > 1) 
+            throw new RegraNegocioRunTime("Depoimento ja criado");
+
+
+
     }
 
     private void verificarExistencia(Depoimento depoimento) {
