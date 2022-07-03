@@ -1,6 +1,7 @@
 package com.egresso.ufma.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -178,7 +179,6 @@ public class EgressoService {
         
         verificarExistencia(egresso);
 
-        
         ProfEgresso profEgresso = profEgressoRepo.save(
             ProfEgresso.builder()
             .egresso(egresso)
@@ -286,6 +286,18 @@ public class EgressoService {
         }
 
         return novoEgresso;
+    }
+
+    public List<Egresso> obterTodosEgressos() {
+        List<Egresso> egressos = repository.findAll();
+        List<Egresso> egressosCompletos = new ArrayList<Egresso>();
+
+        for (Egresso egresso : egressos) {
+            Egresso egressoCompleto = getFullEgresso(egresso.getId());
+            egressosCompletos.add(egressoCompleto);
+        }
+
+        return egressosCompletos;
     }
 
     private void verificarEgresso(Egresso egresso) {

@@ -1,6 +1,7 @@
 package com.egresso.ufma.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -152,6 +153,16 @@ public class EgressoController {
     public ResponseEntity obterEgresso(@PathVariable("id") Long id) {
         try {
             Egresso busca = service.getFullEgresso(id);
+            return new ResponseEntity(busca, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/") 
+    public ResponseEntity obterEgressos() {
+        try {
+            List<Egresso> busca = service.obterTodosEgressos();
             return new ResponseEntity(busca, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
