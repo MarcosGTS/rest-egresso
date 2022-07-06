@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,13 +34,17 @@ public class EgressoController {
     @Autowired
     EgressoService service;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     //salvar egresso
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity salvar(@RequestBody EgressoDTO dto) {
         Egresso egresso = Egresso.builder()
             .nome(dto.getNome())
             .cpf(dto.getCpf())
             .email(dto.getEmail())
+            .senha(passwordEncoder.encode(dto.getSenha()))
             .resumo(dto.getResumo())
             .url_foto(dto.getUrl_foto())
             .build();

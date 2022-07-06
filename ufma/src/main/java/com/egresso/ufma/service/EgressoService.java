@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
+
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.Contato;
 import com.egresso.ufma.model.ContatoEgresso;
@@ -28,11 +30,16 @@ import com.egresso.ufma.repository.ProfEgressoRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EgressoService {
+public class EgressoService implements UserDetailsService {
     
     @Autowired
     EgressoRepository repository;
@@ -300,6 +307,19 @@ public class EgressoService {
         return egressosCompletos;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) 
+        throws UsernameNotFoundException {
+        Optional<Egresso> usr = repository.findByEmail(email);
+        if (!usr.isPresent())            
+            throw new UsernameNotFoundException(email);
+        
+        Egresso egresso = usr.get();
+        List<GrantedAuthority> roles = new ArrayList<>();
+
+        return new User(egresso.getEmail(), egresso.getSenha(), roles);
+    }
+
     private void verificarEgresso(Egresso egresso) {
         if (egresso == null)
             throw new RegraNegocioRunTime("Um Egresso valido deve ser informado");
@@ -309,6 +329,10 @@ public class EgressoService {
             throw new RegraNegocioRunTime("Egresso deve possuir cpf");
         if (egresso.getEmail() == null || egresso.getEmail().isBlank()) 
             throw new RegraNegocioRunTime("Egresso deve possuir email");
+        if (egresso.getSenha() == null || egresso.getSenha().isBlank()) 
+            throw new RegraNegocioRunTime("Egresso deve possuir senha");
+        if (egresso.getSenha().length() < 6) 
+            throw new RegraNegocioRunTime("Senha deve ter mais de 5 caracteres");
 
         Boolean existenciaEmail= repository.existsByEmail(egresso.getEmail());
         Boolean existenciaCpf = repository.existsByCpf(egresso.getCpf());

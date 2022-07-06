@@ -215,6 +215,7 @@ public class EgressoServiceTest {
         .nome("Marcos")
         .email("teste@teste.com")
         .cpf("111.111.111-11")
+        .senha("1234")
         .contatos(new LinkedList<ContatoEgresso>())
         .cursoEgressoAssoc(new LinkedList<CursoEgresso>())
         .profissoes(new LinkedList<ProfEgresso>())

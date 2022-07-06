@@ -1,6 +1,7 @@
 package com.egresso.ufma.repository;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import com.egresso.ufma.model.ContatoEgresso;
 import com.egresso.ufma.model.CursoEgresso;
@@ -13,6 +14,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface EgressoRepository extends JpaRepository<Egresso, Long> {
     public Boolean existsByEmail(String email);
     public Boolean existsByCpf(String cpf);
+
+    Optional<Egresso> findByEmail(String email);
 
     @Query(value = "SELECT ce FROM ContatoEgresso ce LEFT JOIN FETCH ce.contato c WHERE ce.egresso.id = ?1")
     public LinkedList<ContatoEgresso> findContatos(Long egresso_id);

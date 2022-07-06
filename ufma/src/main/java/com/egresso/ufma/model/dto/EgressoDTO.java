@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EgressoDTO {
+    private Long id;
     private String nome;
     private String email;
     private String cpf;
     private String resumo;
     private String url_foto;
     private String senha;
+
 }
