@@ -30,8 +30,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             .authorizeRequests()
             //URL pública
             .antMatchers(HttpMethod.GET).permitAll()
-            .antMatchers(HttpMethod.POST, "/api/egressos/").permitAll()
-            .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers(HttpMethod.POST).permitAll()
+            .antMatchers(HttpMethod.PUT).permitAll()
+            //.antMatchers(HttpMethod.POST, "/api/egressos/").permitAll()
+            //.antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()
             .and()                
             //quem vai autenticar e como

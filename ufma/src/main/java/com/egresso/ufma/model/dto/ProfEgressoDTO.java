@@ -13,4 +13,5 @@ public class ProfEgressoDTO {
     private String nomeEmpresa;
     private String descricao;
     private String dataRegistro;
+    private Long faixaSalarioId;
 }

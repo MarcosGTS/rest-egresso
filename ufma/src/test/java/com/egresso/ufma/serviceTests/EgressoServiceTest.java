@@ -12,6 +12,7 @@ import com.egresso.ufma.model.CursoEgresso;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.model.ProfEgresso;
+import com.egresso.ufma.model.dto.ProfEgressoDTO;
 import com.egresso.ufma.repository.CargoRepository;
 import com.egresso.ufma.repository.ContatoRepository;
 import com.egresso.ufma.repository.CursoRepository;
@@ -77,12 +78,16 @@ public class EgressoServiceTest {
     public void deveAdicionarCargoAoEgresso() {
         Egresso egresso = criarEgressoExemplo();
         Cargo cargo = criarCargoExemplo();
+        FaixaSalario faixasalario = criarFaixaSalarioExemplo();
 
-        String nomeEmpresa = "Empresa Teste";
-        String descricaoEmpresa = "Descricao teste";
-        LocalDate dataRegistro = LocalDate.now();
+        ProfEgressoDTO novoCargo = ProfEgressoDTO.builder()
+            .nomeEmpresa("Empresa Teste")
+            .descricao("Descricao teste")
+            .dataRegistro("2020-03-3")
+            .faixaSalarioId(faixasalario.getId())
+            .build();
 
-        service.adicionarCargo(egresso.getId(), cargo.getId(), nomeEmpresa, descricaoEmpresa, dataRegistro);
+        service.adicionarCargo(egresso.getId(), cargo.getId(), novoCargo);
         
         Egresso consulta = service.getFullEgresso(egresso.getId());
         Cargo cargoConsulta = consulta.getProfissoes().get(0).getCargo();
@@ -150,11 +155,14 @@ public class EgressoServiceTest {
         Cargo novoCargo = criarCargoExemplo();
         FaixaSalario novaFaixaSalario = criarFaixaSalarioExemplo();
 
-        String nomeEmpresa = "Teste";
-        String descricao = "descricao teste";
-        LocalDate dataRegistro = LocalDate.now();
+        ProfEgressoDTO novoProfEgresso = ProfEgressoDTO.builder()
+            .nomeEmpresa("Empresa Teste")
+            .descricao("Descricao teste")
+            .dataRegistro("2020-03-3")
+            .faixaSalarioId(novaFaixaSalario.getId())
+            .build();
 
-        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), nomeEmpresa, descricao, dataRegistro);
+        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), novoProfEgresso);
         service.editarFaixaSalario(novoEgresso.getId(), novoCargo.getId(), novaFaixaSalario.getId());
 
         Egresso consulta = service.getFullEgresso(novoEgresso.getId());
@@ -182,14 +190,17 @@ public class EgressoServiceTest {
         Curso novoCurso = criarCursoExemplo();
         FaixaSalario novaFaixaSalario = criarFaixaSalarioExemplo();
 
-        String nomeEmpresa = "Emgresa Teste";
-        String descricaoEmpresa = "teste descricao";
-        LocalDate dataRegistroEmpresa = LocalDate.now(); 
+        ProfEgressoDTO novoProfEgresso = ProfEgressoDTO.builder()
+            .nomeEmpresa("Empresa Teste")
+            .descricao("Descricao teste")
+            .dataRegistro("2020-03-3")
+            .faixaSalarioId(novaFaixaSalario.getId())
+            .build();
 
         LocalDate dataInicio = LocalDate.of(2001, 03, 27);
         LocalDate dataConclusao = LocalDate.now();
 
-        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), nomeEmpresa, descricaoEmpresa, dataRegistroEmpresa);
+        service.adicionarCargo(novoEgresso.getId(), novoCargo.getId(), novoProfEgresso);
         service.editarFaixaSalario(novoEgresso.getId(), novoCargo.getId(), novaFaixaSalario.getId());
         service.adicionarCurso(novoEgresso.getId(), novoCurso.getId(), dataInicio, dataConclusao);
         

@@ -53,6 +53,10 @@ public class CargoService {
         return repository.getNumberGraduates(cargo.getId());
     }
 
+    public List<Cargo> obterTodosCargos() {
+        return repository.findAll();
+    }
+
     private void verificarCargo(Cargo cargo) {
         if (cargo == null) 
             throw new RegraNegocioRunTime("Um Cargo valido deve ser informado");

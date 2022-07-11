@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.service.CursoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
@@ -20,6 +21,16 @@ public class CursoController {
     
     @Autowired
     CursoService service;
+
+    @GetMapping("/") 
+    public ResponseEntity obterCursos() {
+        try {
+            List<Curso> cursos = service.obterCursos();
+            return new ResponseEntity(cursos, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity obterQuantitavivo(@PathVariable("id") Long id) {

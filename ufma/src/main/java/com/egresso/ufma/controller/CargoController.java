@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egresso.ufma.model.Cargo;
+import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.model.dto.CargoDTO;
 import com.egresso.ufma.service.CargoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
@@ -26,6 +27,7 @@ public class CargoController {
     @Autowired
     CargoService service;
 
+
     @PostMapping
     public ResponseEntity salvar(@RequestBody CargoDTO dto) {
         Cargo cargo = Cargo.builder()
@@ -36,6 +38,17 @@ public class CargoController {
         try {
             Cargo salvo = service.salvar(cargo);
             return new ResponseEntity(salvo, HttpStatus.CREATED);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/")
+    public ResponseEntity obterTodosCargos() {
+
+        try {
+            List<Cargo> cargos = service.obterTodosCargos();
+            return new ResponseEntity(cargos, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

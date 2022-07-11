@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
-
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.Contato;
 import com.egresso.ufma.model.ContatoEgresso;
@@ -18,6 +16,7 @@ import com.egresso.ufma.model.CursoEgressoPk;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.model.ProfEgresso;
+import com.egresso.ufma.model.dto.EgressoDTO;
 import com.egresso.ufma.model.dto.ProfEgressoDTO;
 import com.egresso.ufma.repository.CargoRepository;
 import com.egresso.ufma.repository.ContatoEgressoRespository;
@@ -70,11 +69,33 @@ public class EgressoService implements UserDetailsService {
         return repository.save(egresso);
     };
 
-    public void deletar(Long id) {
-        Egresso egresso = repository.findById(id).get();
+    public void deletar(Long egressoId) {
+        verificarExistencia(egressoId);
 
-        verificarExistencia(egresso);
+        Egresso egresso = repository.findById(egressoId).get();
         repository.delete(egresso);
+    }
+
+    public Egresso editar(Long egressoId, EgressoDTO novoEgresso) {
+        verificarExistencia(egressoId);
+        Egresso egresso = repository.findById(egressoId).get();
+        
+        if (novoEgresso.getNome() != null && !novoEgresso.getNome().isBlank())
+            egresso.setNome(novoEgresso.getNome());
+        
+        if (novoEgresso.getCpf() != null && !novoEgresso.getCpf().isBlank())
+            egresso.setCpf(novoEgresso.getCpf());
+        
+        if (novoEgresso.getEmail() != null && !novoEgresso.getEmail().isBlank())
+            egresso.setEmail(novoEgresso.getEmail());
+        
+        if (novoEgresso.getResumo() != null && !novoEgresso.getResumo().isBlank())   
+            egresso.setResumo(novoEgresso.getResumo());
+        
+        if (novoEgresso.getUrl_foto() != null && !novoEgresso.getUrl_foto().isBlank())
+            egresso.setUrl_foto(novoEgresso.getUrl_foto());
+
+        return repository.save(egresso);
     }
 
     public ContatoEgresso adicionarContato(Long egressoId, Long contatoId, String endereco) {
@@ -83,7 +104,7 @@ public class EgressoService implements UserDetailsService {
         Contato contato = contatoRepo.findCompleteContato(contatoId);
 
         //validacoes
-        verificarExistencia(egresso);
+        verificarExistencia(egressoId);
 
         ContatoEgresso novoContato = contatoEgressoRepo.save(
             ContatoEgresso.builder()
@@ -114,7 +135,7 @@ public class EgressoService implements UserDetailsService {
         ContatoEgressoPk contatoEgressoK = new ContatoEgressoPk(egressoId, contatoId);
         ContatoEgresso contatoEgresso = contatoEgressoRepo.findById(contatoEgressoK).get();
 
-        verificarExistencia(egresso);
+        verificarExistencia(egressoId);
 
         if (endereco != null) 
             contatoEgresso.setEndereco(endereco);
@@ -131,7 +152,7 @@ public class EgressoService implements UserDetailsService {
         Egresso egresso = getFullEgresso(egressoId);
         Curso curso = cursoRepo.findCompleteCurso(cursoId);
 
-        verificarExistencia(egresso);
+        verificarExistencia(egressoId);
 
         CursoEgresso novoCursoEgresso = cursoEgressoRepo.save(
             CursoEgresso.builder()
@@ -180,19 +201,23 @@ public class EgressoService implements UserDetailsService {
         return null;
     }
 
-    public Cargo adicionarCargo(Long egressoId, Long cargoId, String nomeEmpresa, String descricao, LocalDate dataRegistro) {
+    public Cargo adicionarCargo(Long egressoId, Long cargoId, ProfEgressoDTO novoCargo) {
+        verificarExistencia(egressoId);
+        
         Egresso egresso = getFullEgresso(egressoId);
         Cargo cargo = cargoRepo.findCompleteCargo(cargoId);
-        
-        verificarExistencia(egresso);
+        FaixaSalario faixaSalario = faixaSalarioRepo.findCompleteFaixaSalario(novoCargo.getFaixaSalarioId());
+
+        LocalDate dataRegistro = LocalDate.parse(novoCargo.getDataRegistro());
 
         ProfEgresso profEgresso = profEgressoRepo.save(
             ProfEgresso.builder()
             .egresso(egresso)
             .cargo(cargo)
-            .empresa(nomeEmpresa)
-            .descricao(descricao)
+            .empresa(novoCargo.getNomeEmpresa())
+            .descricao(novoCargo.getDescricao())
             .data_registro(dataRegistro)
+            .faixaSalario(faixaSalario)
             .build());
         
         if (egresso.getProfissoes() == null) egresso.setProfissoes(new LinkedList<ProfEgresso>());
@@ -203,6 +228,10 @@ public class EgressoService implements UserDetailsService {
         cargo.getProfissoes().add(profEgresso);
         cargoRepo.save(cargo);
 
+        if (faixaSalario.getProfissoes() == null) faixaSalario.setProfissoes(new LinkedList<ProfEgresso>());
+        faixaSalario.getProfissoes().add(profEgresso);
+        faixaSalarioRepo.save(faixaSalario);
+
         return cargoRepo.save(cargo);
     }
 
@@ -211,7 +240,7 @@ public class EgressoService implements UserDetailsService {
         Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoAtualId);
         Cargo novoCargo = cargoRepo.findCompleteCargo(novoCargoId);
 
-        verificarExistencia(egresso);
+        verificarExistencia(egressoId);
 
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
             if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
@@ -244,7 +273,7 @@ public class EgressoService implements UserDetailsService {
         Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoId);
         FaixaSalario novaFaixaSalario = faixaSalarioRepo.findCompleteFaixaSalario(faixaSalarioId);
         
-        verificarExistencia(egresso);
+        verificarExistencia(egressoId);
 
         for (ProfEgresso profEgresso : egresso.getProfissoes()) {
             if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
@@ -279,6 +308,7 @@ public class EgressoService implements UserDetailsService {
             .cpf(consulta.getCpf())
             .email(consulta.getEmail())
             .resumo(consulta.getResumo())
+            .senha(consulta.getSenha())
             .build();
 
             
@@ -343,8 +373,8 @@ public class EgressoService implements UserDetailsService {
             throw new RegraNegocioRunTime("Cpf informa ja cadastrado");
     }
 
-    private void verificarExistencia(Egresso egresso) {
-        if (!repository.existsById(egresso.getId())) {
+    private void verificarExistencia(Long egressoId) {
+        if (!repository.existsById(egressoId)) {
             throw new RegraNegocioRunTime("Egresso nao existe no banco");
         }
     }

@@ -46,6 +46,10 @@ public class CursoService {
         return egressos;
     }
 
+    public List<Curso> obterCursos() {
+        return repository.findAll();
+    }
+
     public Integer consultarQuantidadeEgressos(Long cursoId) {
         return consultarEgressos(cursoId).size();
     }

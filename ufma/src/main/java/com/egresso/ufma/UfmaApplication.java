@@ -13,11 +13,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class UfmaApplication implements WebMvcConfigurer {
 
-	// @Override
-	// public void addCorsMappings(CorsRegistry cors) {
-	// 	cors.addMapping("/**")
-	// 		.allowedMethods("GET", "PUT", "DELETE", "POST", "OPTIONS");
-	// }
+	@Override
+	public void addCorsMappings(CorsRegistry cors) {
+		cors.addMapping("/**")
+			.allowedMethods("GET", "PUT", "DELETE", "POST", "OPTIONS");
+	}
 
 	@Bean
 	public PasswordEncoder bCryptPasswordEncoder() {

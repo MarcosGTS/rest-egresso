@@ -57,6 +57,18 @@ public class EgressoController {
         }
     }
 
+    @PutMapping("/{idEgresso}")
+    public ResponseEntity editarEgresso(@PathVariable("idEgresso") Long idEgresso, @RequestBody EgressoDTO dto) {
+        
+        try {
+            Egresso editado = service.editar(idEgresso, dto);
+            return new ResponseEntity(editado, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        
+    }
+
     @PostMapping("/{idEgresso}/curso/{idCurso}")
     public ResponseEntity adicionarCurso(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idCurso") Long idCurso ,@RequestBody DatasDTO dto) {
 
@@ -89,11 +101,12 @@ public class EgressoController {
     }
 
     @PostMapping("/{idEgresso}/cargo/{idCargo}")
-    public ResponseEntity adicionarCargo(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idCargo") Long idCargo ,@RequestBody ProfEgressoDTO dto) {
+    public ResponseEntity adicionarCargo(@PathVariable("idEgresso") Long idEgresso,
+        @PathVariable("idCargo") Long idCargo, @RequestBody ProfEgressoDTO dto) {
 
         try {
             LocalDate dataRegistro = LocalDate.parse(dto.getDataRegistro());
-            Cargo adicionado = service.adicionarCargo(idEgresso, idCargo, dto.getNomeEmpresa(), dto.getDescricao(), dataRegistro);
+            Cargo adicionado = service.adicionarCargo(idEgresso, idCargo, dto);
             return new ResponseEntity(adicionado, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
