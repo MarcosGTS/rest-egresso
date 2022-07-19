@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egresso.ufma.model.FaixaSalario;
+import com.egresso.ufma.model.dto.EstatisticaDTO;
 import com.egresso.ufma.service.FaixaSalarioService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -21,12 +22,12 @@ public class FaixaSalarioController {
     @Autowired
     FaixaSalarioService service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity quantitativoEgresso(@PathVariable("id") Long id) {
+    @GetMapping("/estatisticas")
+    public ResponseEntity quantitativoEgresso() {
 
         try {
-            Integer quantidade = service.consultarQuantidadeEgressos(id);
-            return new ResponseEntity(quantidade, HttpStatus.OK);
+            List<EstatisticaDTO> consulta = service.obterQuantitavioCompleto();
+            return new ResponseEntity(consulta, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

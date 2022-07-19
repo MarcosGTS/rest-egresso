@@ -1,8 +1,10 @@
 package com.egresso.ufma.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.egresso.ufma.model.Cargo;
+import com.egresso.ufma.model.dto.EstatisticaDTO;
 import com.egresso.ufma.repository.CargoRepository;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -51,6 +53,26 @@ public class CargoService {
         verificarCargo(cargo);
 
         return repository.getNumberGraduates(cargo.getId());
+    }
+
+    public List<EstatisticaDTO> obterQuantitativoCompleto() {
+        List<Cargo> cargos = obterTodosCargos();
+        List<EstatisticaDTO> estatisticas = new LinkedList<EstatisticaDTO>();
+
+        for(Cargo cargo : cargos) {
+            Integer valor = consultarQuantidadeEgressos(cargo.getId());
+            String nome = cargo.getNome();
+
+            EstatisticaDTO novoDado = EstatisticaDTO
+                .builder()
+                .label(nome)
+                .value(valor)
+                .build();
+
+            estatisticas.add(novoDado);
+        }
+
+        return estatisticas;
     }
 
     public List<Cargo> obterTodosCargos() {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.egresso.ufma.model.Cargo;
 import com.egresso.ufma.model.FaixaSalario;
 import com.egresso.ufma.model.dto.CargoDTO;
+import com.egresso.ufma.model.dto.EstatisticaDTO;
 import com.egresso.ufma.service.CargoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -77,12 +78,12 @@ public class CargoController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity obterQuantitativo(@PathVariable("id") Long id) {
+    @GetMapping("/estatisticas")
+    public ResponseEntity obterQuantitativo() {
 
         try {
-            Integer quantidade = service.consultarQuantidadeEgressos(id);
-            return new ResponseEntity(quantidade, HttpStatus.OK);
+            List<EstatisticaDTO> consulta = service.obterQuantitativoCompleto();
+            return new ResponseEntity(consulta, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

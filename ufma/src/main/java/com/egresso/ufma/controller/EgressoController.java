@@ -24,6 +24,7 @@ import com.egresso.ufma.model.dto.ContatoDTO;
 import com.egresso.ufma.model.dto.DatasDTO;
 import com.egresso.ufma.model.dto.EgressoDTO;
 import com.egresso.ufma.model.dto.ProfEgressoDTO;
+import com.egresso.ufma.repository.EgressoRepository;
 import com.egresso.ufma.service.EgressoService;
 import com.egresso.ufma.service.exceptions.RegraNegocioRunTime;
 
@@ -33,6 +34,9 @@ public class EgressoController {
     
     @Autowired
     EgressoService service;
+
+    @Autowired
+    EgressoRepository repo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,7 +61,7 @@ public class EgressoController {
         }
     }
 
-    @PutMapping("/{idEgresso}")
+    @PostMapping("/editar/{idEgresso}")
     public ResponseEntity editarEgresso(@PathVariable("idEgresso") Long idEgresso, @RequestBody EgressoDTO dto) {
         
         try {
@@ -181,6 +185,17 @@ public class EgressoController {
     public ResponseEntity obterEgressos() {
         try {
             List<Egresso> busca = service.obterTodosEgressos();
+            return new ResponseEntity(busca, HttpStatus.OK);
+        } catch (RegraNegocioRunTime e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/email/{email}")  
+    public ResponseEntity obterEgressosPorEmail(@PathVariable("email") String email) {
+        
+        try {
+            Egresso busca = repo.findByEmail(email).get();
             return new ResponseEntity(busca, HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());

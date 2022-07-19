@@ -51,7 +51,7 @@ public class DepoimentoController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/editar/{id}")
     public ResponseEntity editar(@PathVariable("id") Long id, @RequestBody DepoimentoDTO dto) {
 
         try {

@@ -308,6 +308,7 @@ public class EgressoService implements UserDetailsService {
             .cpf(consulta.getCpf())
             .email(consulta.getEmail())
             .resumo(consulta.getResumo())
+            .url_foto(consulta.getUrl_foto())
             .senha(consulta.getSenha())
             .build();
 

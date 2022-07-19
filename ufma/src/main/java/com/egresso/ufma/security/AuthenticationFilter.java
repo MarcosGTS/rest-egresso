@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.core.Authentication;
 
@@ -36,7 +37,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
         try {
             EgressoDTO usuario = new ObjectMapper()
                 .readValue(req.getInputStream(), EgressoDTO.class);
-
+            
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             usuario.getEmail(),
@@ -60,6 +61,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
                                        + SecurityConstants.EXPIRATION_TIME))
                         .signWith(SignatureAlgorithm.HS512, SecurityConstants.KEY)
                         .compact();
-        res.addHeader("token", JWT);
+        res.setContentType("application/json");
+        res.setCharacterEncoding("UTF-8");
+        res.getWriter().write(
+            "{\"" + "Token" + "\":\"" + JWT + "\"}"
+        );
     }
 }
