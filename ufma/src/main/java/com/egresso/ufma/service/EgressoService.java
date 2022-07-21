@@ -185,16 +185,36 @@ public class EgressoService implements UserDetailsService {
 
             //Atualiza relacoes entre as tabelas
             if(novoCursoId != null) {
+                egresso.getCursoEgressoAssoc().remove(cursoEgresso);
                 cursoAtual.getCursoEgressoAssoc().remove(cursoEgresso);
-                cursoEgresso.getId().setCurso_id(novoCurso.getId());
-    
+                
+                CursoEgresso novoCursoEgresso = CursoEgresso
+                    .builder()
+                    .id(new CursoEgressoPk(novoCursoId, egressoId))
+                    .data_inicio(dataInicio)
+                    .data_conclusao(dataConclusao)
+                    .curso(novoCurso)
+                    .egresso(egresso)
+                    .build();
+
                 if (novoCurso.getCursoEgressoAssoc() == null) novoCurso.setCursoEgressoAssoc(new LinkedList<CursoEgresso>()); 
-                novoCurso.getCursoEgressoAssoc().add(cursoEgresso);
+                
+                novoCurso.getCursoEgressoAssoc().add(novoCursoEgresso);
+                egresso.getCursoEgressoAssoc().add(novoCursoEgresso);
+
+                cursoEgressoRepo.save(novoCursoEgresso);
+
+            } else {
+                if (dataInicio != null) cursoEgresso.setData_inicio(dataInicio);
+                if (dataConclusao != null) cursoEgresso.setData_conclusao(dataConclusao);
             }
             
-            if (dataInicio != null) cursoEgresso.setData_inicio(dataInicio);
-            if (dataConclusao != null) cursoEgresso.setData_conclusao(dataConclusao);
+            cursoRepo.save(cursoAtual);
+            cursoRepo.save(novoCurso);
+            repository.save(egresso);
 
+            cursoEgressoRepo.delete(cursoEgresso);
+            
             return novoCurso;
         }
         

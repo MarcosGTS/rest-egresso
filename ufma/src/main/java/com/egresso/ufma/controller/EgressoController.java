@@ -88,7 +88,7 @@ public class EgressoController {
 
     }
 
-    @PutMapping("/{idEgresso}/curso/{idCurso}/{idNovoCurso}")
+    @PostMapping("editar/{idEgresso}/curso/{idCurso}/{idNovoCurso}")
     public ResponseEntity editarCurso(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idCurso") Long idCurso, 
         @PathVariable("idNovoCurso") Long idNovoCurso, @RequestBody DatasDTO dto) {
     

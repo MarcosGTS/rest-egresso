@@ -1,0 +1,33 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007ff594a9a0ad, pid=4787, tid=4813
+#
+# JRE version: OpenJDK Runtime Environment (11.0.15+10) (build 11.0.15+10-Ubuntu-0ubuntu0.20.04.1)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.15+10-Ubuntu-0ubuntu0.20.04.1, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x30ad]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h" (or dumping to /home/marcos/repos/rest-regresso/core.4787)
+#
+# If you would like to submit a bug report, please visit:
+#   Unknown
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:45995 com.egresso.ufma.UfmaApplication
+
+Host: Intel(R) Pentium(R) CPU B980 @ 2.40GHz, 2 cores, 5G, Linux Mint 20.1 Ulyssa
+Time: Wed Jul 20 21:04:29 2022 -03 elapsed time: 5374.593991 seconds (0d 1h 29m 34s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007ff5900e6800):  JavaThread "Signal Dispatcher" daemon [_thread_in_vm, id=4813, stack(0x00007ff57038b000,0x00007ff57048c000)]
+
+Stack: [0x00007ff57038b000,0x00007ff57048c000],  sp=0x00007ff5704891f0,  free space=1016k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libjimage.so+0x30ad]
+C  [libjimage.so+0x3ca2]
+C  [libjimage.so+0x4191]  JIMAGE_FindResource+0xf1
+V  [libjvm.so+0x5baef1]
