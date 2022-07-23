@@ -20,6 +20,7 @@ import com.egresso.ufma.model.ContatoEgresso;
 import com.egresso.ufma.model.Curso;
 import com.egresso.ufma.model.Egresso;
 import com.egresso.ufma.model.FaixaSalario;
+import com.egresso.ufma.model.ProfEgresso;
 import com.egresso.ufma.model.dto.ContatoDTO;
 import com.egresso.ufma.model.dto.DatasDTO;
 import com.egresso.ufma.model.dto.EgressoDTO;
@@ -117,13 +118,12 @@ public class EgressoController {
         }
     }
 
-    @PutMapping("/{idEgresso}/cargo/{idCurso}/{idNovoCargo}")
-    public ResponseEntity editarCargo(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idCargo") Long idCargo, 
-        @PathVariable("idNovoCurso") Long idNovoCargo, @RequestBody ProfEgressoDTO dto) {
+    @PostMapping("editar/{profId}/cargo")
+    public ResponseEntity editarCargo(@PathVariable("profId") Long profId, @RequestBody ProfEgressoDTO dto) {
     
         try {
-            Cargo editado = service.editarCargo(idEgresso, idCargo, idNovoCargo, dto);
-            return new ResponseEntity(editado, HttpStatus.OK);
+            ProfEgresso editado = service.editarCargo(profId, dto);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

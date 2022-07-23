@@ -17,4 +17,5 @@ public interface CargoRepository extends JpaRepository<Cargo, Long> {
 
     @Query(value="SELECT c FROM Cargo c LEFT JOIN FETCH c.profissoes WHERE c.id = ?1")
     public Cargo findCompleteCargo(Long id);
+
 }

@@ -255,37 +255,77 @@ public class EgressoService implements UserDetailsService {
         return cargoRepo.save(cargo);
     }
 
-    public Cargo editarCargo(Long egressoId, Long cargoAtualId, Long novoCargoId, ProfEgressoDTO dto) {
-        Egresso egresso = getFullEgresso(egressoId);
-        Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoAtualId);
-        Cargo novoCargo = cargoRepo.findCompleteCargo(novoCargoId);
+    public ProfEgresso editarCargo(Long profId, ProfEgressoDTO dto) {
+        // Egresso egresso = getFullEgresso(egressoId);
+        // Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoAtualId);
+        // Cargo novoCargo = cargoRepo.findCompleteCargo(novoCargoId);
 
-        verificarExistencia(egressoId);
+        // verificarExistencia(egressoId);
 
-        for (ProfEgresso profEgresso : egresso.getProfissoes()) {
-            if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
-                continue;
+        // for (ProfEgresso profEgresso : egresso.getProfissoes()) {
+        //     if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
+        //         continue;
 
-            //Atualiza relacoes entre as tabelas
-            cargoAtual.getProfissoes().remove(profEgresso);
-            profEgresso.setCargo(novoCargo);
+        //     //Atualiza relacoes entre as tabelas
+        //     cargoAtual.getProfissoes().remove(profEgresso);
+        //     profEgresso.setCargo(novoCargo);
 
-            if (novoCargo.getProfissoes() == null) novoCargo.setProfissoes(new LinkedList<ProfEgresso>());
-            novoCargo.getProfissoes().add(profEgresso);
+        //     if (novoCargo.getProfissoes() == null) novoCargo.setProfissoes(new LinkedList<ProfEgresso>());
+        //     novoCargo.getProfissoes().add(profEgresso);
 
-            //TODO: Validar data
-            String novoNome = dto.getNomeEmpresa();
-            String novaDescricao = dto.getDescricao();
-            LocalDate novaDataRegistro = LocalDate.parse(dto.getDataRegistro());
+        //     //TODO: Validar data
+        //     String novoNome = dto.getNomeEmpresa();
+        //     String novaDescricao = dto.getDescricao();
+        //     LocalDate novaDataRegistro = LocalDate.parse(dto.getDataRegistro());
 
-            if (novoNome != null) profEgresso.setEmpresa(novoNome);
-            if (novaDescricao != null) profEgresso.setDescricao(novaDescricao);
-            if (novaDataRegistro != null) profEgresso.setData_registro(novaDataRegistro);;
+        //     if (novoNome != null) profEgresso.setEmpresa(novoNome);
+        //     if (novaDescricao != null) profEgresso.setDescricao(novaDescricao);
+        //     if (novaDataRegistro != null) profEgresso.setData_registro(novaDataRegistro);;
 
-            return novoCargo;
-        }
+        //     return novoCargo;
+        // }
 
-        return null;
+        ProfEgresso prof = profEgressoRepo.getById(profId);
+        Long prevFaixaId = profEgressoRepo.findFaixa(profId);
+        Long prevCargoId = profEgressoRepo.findCargo(profId);
+        
+        Cargo novoCargo = cargoRepo.findCompleteCargo(dto.getCargoId());
+        Cargo prevCargo = cargoRepo.findCompleteCargo(prevCargoId);
+        FaixaSalario novaFaixa = faixaSalarioRepo.findCompleteFaixaSalario(dto.getFaixaSalarioId());
+        FaixaSalario prevFaixa = faixaSalarioRepo.findCompleteFaixaSalario(prevFaixaId);
+        
+        if (novoCargo != null && novoCargo.getProfissoes() == null) 
+            novoCargo.setProfissoes(new LinkedList<ProfEgresso>());
+        novoCargo.getProfissoes().add(prof);
+
+        if (novaFaixa != null && novaFaixa.getProfissoes() == null) 
+            novaFaixa.setProfissoes(new LinkedList<ProfEgresso>());
+        novaFaixa.getProfissoes().add(prof);
+        
+        if (prevCargo != null)
+            prevCargo.getProfissoes().remove(prof);
+        
+        if(prevFaixa != null)
+            prevFaixa.getProfissoes().remove(prof);
+
+
+        LocalDate dataRegistro = LocalDate.parse(dto.getDataRegistro());
+
+        prof.setCargo(novoCargo);
+        prof.setFaixaSalario(novaFaixa);
+        prof.setDescricao(dto.getDescricao());
+        prof.setData_registro(dataRegistro);
+        prof.setEmpresa(dto.getNomeEmpresa());
+
+        cargoRepo.save(novoCargo);
+        cargoRepo.save(prevCargo);
+
+        faixaSalarioRepo.save(novaFaixa);
+        faixaSalarioRepo.save(prevFaixa);
+
+        profEgressoRepo.save(prof);
+
+        return prof;
     }
 
     public FaixaSalario editarFaixaSalario(Long egressoId, Long cargoId, Long faixaSalarioId) {
