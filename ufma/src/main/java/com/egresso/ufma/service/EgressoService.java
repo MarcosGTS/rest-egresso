@@ -128,23 +128,26 @@ public class EgressoService implements UserDetailsService {
     }
 
     public ContatoEgresso editarContato(Long egressoId, Long contatoId, Long novoContatoId, String endereco) {
-        Egresso egresso = repository.findById(egressoId).get();
-        Contato contato = contatoRepo.findById(contatoId).get();
-        Contato novoContato = contatoRepo.findById(novoContatoId).get();
+        Egresso egresso = getFullEgresso(egressoId);
+        Contato contato = contatoRepo.findCompleteContato(contatoId);
+        Contato novoContato = contatoRepo.findCompleteContato(novoContatoId);
 
         ContatoEgressoPk contatoEgressoK = new ContatoEgressoPk(egressoId, contatoId);
         ContatoEgresso contatoEgresso = contatoEgressoRepo.findById(contatoEgressoK).get();
 
         verificarExistencia(egressoId);
 
-        if (endereco != null) 
-            contatoEgresso.setEndereco(endereco);
-        
-        if (novoContato != null) {
-            contatoEgresso.setContato(novoContato);
-            contato.getEgressos().remove(contatoEgresso);
-        }
-        
+        ContatoEgresso novoContatoEgresso = ContatoEgresso
+        .builder()
+        .id(new ContatoEgressoPk(egressoId, novoContatoId))
+        .contato(novoContato)
+        .egresso(egresso)
+        .endereco(endereco)
+        .build();
+
+        contatoEgressoRepo.delete(contatoEgresso);
+        contatoEgressoRepo.save(novoContatoEgresso);
+ 
         return contatoEgresso;
     }
 
@@ -256,34 +259,6 @@ public class EgressoService implements UserDetailsService {
     }
 
     public ProfEgresso editarCargo(Long profId, ProfEgressoDTO dto) {
-        // Egresso egresso = getFullEgresso(egressoId);
-        // Cargo cargoAtual = cargoRepo.findCompleteCargo(cargoAtualId);
-        // Cargo novoCargo = cargoRepo.findCompleteCargo(novoCargoId);
-
-        // verificarExistencia(egressoId);
-
-        // for (ProfEgresso profEgresso : egresso.getProfissoes()) {
-        //     if (profEgresso.getCargo().getId() != cargoAtual.getId()) 
-        //         continue;
-
-        //     //Atualiza relacoes entre as tabelas
-        //     cargoAtual.getProfissoes().remove(profEgresso);
-        //     profEgresso.setCargo(novoCargo);
-
-        //     if (novoCargo.getProfissoes() == null) novoCargo.setProfissoes(new LinkedList<ProfEgresso>());
-        //     novoCargo.getProfissoes().add(profEgresso);
-
-        //     //TODO: Validar data
-        //     String novoNome = dto.getNomeEmpresa();
-        //     String novaDescricao = dto.getDescricao();
-        //     LocalDate novaDataRegistro = LocalDate.parse(dto.getDataRegistro());
-
-        //     if (novoNome != null) profEgresso.setEmpresa(novoNome);
-        //     if (novaDescricao != null) profEgresso.setDescricao(novaDescricao);
-        //     if (novaDataRegistro != null) profEgresso.setData_registro(novaDataRegistro);;
-
-        //     return novoCargo;
-        // }
 
         ProfEgresso prof = profEgressoRepo.getById(profId);
         Long prevFaixaId = profEgressoRepo.findFaixa(profId);

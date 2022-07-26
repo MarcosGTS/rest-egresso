@@ -143,13 +143,13 @@ public class EgressoController {
     
     }
 
-    @PutMapping("/{idEgresso}/contato/{idContato}/{idNovoContato}")
+    @PostMapping("editar/{idEgresso}/contato/{idContato}/{idNovoContato}")
     public ResponseEntity editarContato(@PathVariable("idEgresso") Long idEgresso, @PathVariable("idContato") Long idContato,
         @PathVariable("idNovoContato") Long idNovoContato, @RequestBody ContatoDTO dto) {
 
         try {
-            ContatoEgresso editado = service.editarContato(idEgresso, idContato, idNovoContato, dto.getEndereco());
-            return new ResponseEntity(editado, HttpStatus.OK);
+            service.editarContato(idEgresso, idContato, idNovoContato, dto.getEndereco());
+            return new ResponseEntity(HttpStatus.OK);
         } catch (RegraNegocioRunTime e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
